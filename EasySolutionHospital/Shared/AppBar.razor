@@ -1,0 +1,112 @@
+﻿@using EasySolutionHospital.Shared.ResponseModel;
+@using System.Text.Json;
+
+<MudAppBar Color="Color.Transparent" Fixed="false" Elevation="1">
+    <MudImage Style="width: 70px;" Src="Images/logo.png"></MudImage>
+    <MudSpacer />
+    <MudItem Class="d-flex flex-row gap-2 mr-8">
+        <MudButton Class="appber-button">Home</MudButton>
+        <MudButton Class="appber-button">Service</MudButton>
+        <MudButton Class="appber-button">Appointment</MudButton>
+        <MudButton Class="appber-button">About</MudButton>
+    </MudItem>
+    @if (isAuthorized)
+    {
+        <MudMenu AnchorOrigin="Origin.BottomRight" Dense="true">
+            <ActivatorContent>
+                <MudAvatar>
+                    <MudImage Src="Images/userlogin.png"></MudImage>
+                </MudAvatar>
+            </ActivatorContent>
+            <ChildContent>
+                <MudDivider Class="mb-2" />
+                <MudListItem Text="Logout" Icon="@Icons.Material.Filled.Logout" OnClick="Logout" />
+            </ChildContent>
+        </MudMenu>
+    }
+    else
+    {
+        <MudMenu AnchorOrigin="Origin.BottomRight" Dense="true">
+            <ActivatorContent>
+                <MudAvatar>
+                    <MudImage Src="Images/userlogout.png"></MudImage>
+                </MudAvatar>
+            </ActivatorContent>
+            <ChildContent>
+                <MudDivider Class="mb-2" />
+                <MudListItem Text="Login" Icon="@Icons.Material.Filled.Login" OnClick="Login" />
+            </ChildContent>
+        </MudMenu>
+    }
+</MudAppBar>
+
+<style>
+    .appber-button{
+        color: #000;
+    }
+
+    .appber-button:hover {
+        color: #0096FF;
+        background: none !important;
+        border-bottom: 2px solid #0096FF;
+    }
+
+    .appber-button:focus {
+        color: #0096FF;
+        background: none !important;
+        border-bottom: 2px solid #0096FF;
+    }
+</style>
+
+@code {
+    private bool isAuthorized { get; set; } = false;
+    private DialogOptions _dialogOption = new DialogOptions() { MaxWidth = MaxWidth.Medium, FullWidth = true, DisableBackdropClick = true, NoHeader = true, CloseButton = false };
+
+    private void AppBerClick()
+    {
+
+    }
+
+    private void click()
+    {
+
+    }
+
+    private async Task Login()
+    {
+        var dialog = _dialogService.Show<AuthDialog>("Easy Solution", _dialogOption);
+        var result = await dialog.Result;
+        if (!result.Cancelled)
+        {
+            var registermodel = result.Data as RegisterModel;
+            if(registermodel.FirstName != null)
+            {
+                var response = await _httpService.Post<LoginResponse>("/api/auth/signup", registermodel);
+                if(response != null)
+                {
+                    var authValue = JsonSerializer.Serialize<LoginResponse>(response);
+                    await ((AuthStateProvider)_authStateProvider).SetStateAsync(authValue);
+                }
+            }
+            else
+            {
+                var logInModel = new SigninModel
+                    {
+                        Email = registermodel.Email,
+                        Password = registermodel.Password
+                    };
+
+                var response = await _httpService.Post<LoginResponse>("/api/auth/signin", registermodel);
+                if (response != null)
+                {
+                    var authValue = JsonSerializer.Serialize<LoginResponse>(response);
+                    await ((AuthStateProvider)_authStateProvider).SetStateAsync(authValue);
+                    isAuthorized = true;
+                }
+            }
+        }
+        
+    }
+
+    private void Logout() => isAuthorized = !isAuthorized;
+}

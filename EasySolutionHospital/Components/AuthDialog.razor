@@ -1,0 +1,134 @@
+﻿<MudDialog>
+    <DialogContent>
+        <MudGrid>
+            <MudItem xs="6">
+                @if (isCreate)
+                {
+                    <MudText Typo="Typo.h5" Color="Color.Tertiary" Class="mt-6" Style="font-weight: 700">Sign Up</MudText>
+                    <MudItem Class="d-flex align-items-center" Style="height: 90%;">
+                        <EditForm Model="RegisterModel">
+                            <DataAnnotationsValidator />
+                            <MudGrid>
+                                <MudGrid>
+                                    <MudItem xs="6">
+                                        <MudTextField @bind-Value="RegisterModel.FirstName" Label="First Name" For="(() => RegisterModel.FirstName)" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                                    </MudItem>
+                                    <MudItem xs="6">
+                                        <MudTextField @bind-Value="RegisterModel.LastName" Label="Last Name" For="(() => RegisterModel.LastName)" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                                    </MudItem>
+                                    <MudItem xs="12">
+                                        <MudTextField @bind-Value="RegisterModel.Address" Label="Address" For="(() => RegisterModel.Address)" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                                    </MudItem>
+                                    <MudItem xs="7">
+                                        <MudTextField @bind-Value="RegisterModel.Phone" Label="Phone Number" For="(() => RegisterModel.Phone)" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                                    </MudItem>
+                                    <MudItem xs="5">
+                                        <MudDatePicker Date="RegisterModel.DateOfBirth" Label="Date of Birth" Placeholder="Select Date" Variant="Variant.Outlined" Margin="Margin.Dense"></MudDatePicker>
+                                    </MudItem>
+                                    <MudItem xs="12">
+                                        <MudTextField @bind-Value="RegisterModel.Email" Label="Email" For="(() => RegisterModel.Email)" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                                    </MudItem>
+                                    <MudItem xs="6">
+                                        <MudTextField @bind-Value="RegisterModel.Password" Label="Password" For="(() => RegisterModel.Password)" Variant="Variant.Outlined" Margin="Margin.Dense" InputType="@PasswordInput" Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon" OnAdornmentClick="ButtonTestclick" AdornmentAriaLabel="Show Password"></MudTextField>
+                                    </MudItem>
+                                    <MudItem xs="6">
+                                        <MudTextField @bind-Value="RegisterModel.ConfirmPassword" Label="Confirm Password" For="(() => RegisterModel.ConfirmPassword)" Variant="Variant.Outlined" Margin="Margin.Dense" InputType="@PasswordInput" Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon" OnAdornmentClick="ButtonTestclick" AdornmentAriaLabel="Show Password"></MudTextField>
+                                    </MudItem>
+                                </MudGrid>
+                            </MudGrid>
+                        </EditForm>
+                    </MudItem>
+                }
+                else
+                {
+                    <MudCardMedia Image="Images/signup.jpg" Height="400"></MudCardMedia>
+                    <MudItem Class="d-flex justify-center mb-4">
+                        <MudText @onclick="ToggleSignin" Style="text-decoration: underline; cursor: pointer;">Create an account</MudText>
+                    </MudItem>
+                }
+            </MudItem>
+            <MudItem xs="6">
+                @if (!isCreate)
+                {
+                    <MudText Typo="Typo.h5" Color="Color.Tertiary" Class="mt-6" Style="font-weight: 700">Sign In</MudText>
+                    <MudItem Class="d-flex align-items-center" Style="height: 90%;">
+                        <EditForm Model="RegisterModel">
+                            <DataAnnotationsValidator />
+                            <MudGrid>
+                                <MudItem xs="12">
+                                    <MudTextField @bind-Value="RegisterModel.Email" Label="Email" For="(() => RegisterModel.Email)" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                                </MudItem>
+                                <MudItem xs="12">
+                                    <MudTextField @bind-Value="RegisterModel.Password" Label="Password" For="(() => RegisterModel.Password)" Variant="Variant.Outlined" Margin="Margin.Dense" InputType="@PasswordInput" Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon" OnAdornmentClick="ButtonTestclick" AdornmentAriaLabel="Show Password"></MudTextField>
+                                </MudItem>
+                            </MudGrid>
+                        </EditForm>
+                    </MudItem>
+                }
+                else
+                {
+                    <MudCardMedia Image="Images/login.jpg" Height="400"></MudCardMedia>
+                    <MudItem Class="d-flex justify-center mb-4">
+                        <MudText @onclick="ToggleSignin" Style="text-decoration: underline; cursor: pointer;">Already Member Sign in</MudText>
+                    </MudItem>
+                }
+            </MudItem>
+        </MudGrid>
+        @if (!isCreate)
+        {
+            <div class="d-flex gap-3 justify-end">
+                <MudButton Color="Color.Tertiary" Variant="Variant.Outlined" OnClick="Cancel">Cancel</MudButton>
+                <MudButton Color="Color.Tertiary" Variant="Variant.Filled" OnClick="Submit">SignIn</MudButton>
+            </div>
+        }
+        else
+        {
+            <MudItem class="d-flex gap-3 justify-center" Style="margin-right: 21%;">
+                <MudButton Color="Color.Tertiary" Variant="Variant.Outlined" OnClick="Cancel">Cancel</MudButton>
+                <MudButton Color="Color.Tertiary" Variant="Variant.Filled" OnClick="Submit">SignUp</MudButton>
+            </MudItem>
+        }
+    </DialogContent>
+</MudDialog>
+
+<style>
+  .create-background{
+        background-image: url(../Images/login.jpg);
+        background-size: 100% 100%;
+  }
+</style>
+@code {
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public RegisterModel RegisterModel { get; set; } = new();
+
+    private bool isShow { get; set; } = false;
+    InputType PasswordInput = InputType.Password;
+    string PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
+
+    private bool isCreate { get; set; } = false;
+
+    void Submit() => MudDialog.Close(DialogResult.Ok(RegisterModel));
+
+    void Cancel() => MudDialog.Cancel();
+
+    void ToggleSignin() => isCreate = !isCreate;
+
+    void ButtonTestclick()
+    {
+        @if (isShow)
+        {
+            isShow = false;
+            PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
+            PasswordInput = InputType.Password;
+        }
+        else
+        {
+            isShow = true;
+            PasswordInputIcon = Icons.Material.Filled.Visibility;
+            PasswordInput = InputType.Text;
+        }
+    }
+}

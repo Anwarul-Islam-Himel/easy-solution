@@ -1,0 +1,97 @@
+﻿<MudCard Class="custom-card">
+    <MudCardMedia Image="@HealthPackage.ImagePath" Height="303"></MudCardMedia>
+    <MudCardContent>
+        <MudText Typo="Typo.h6" Color="Color.Tertiary">@HealthPackage.Name</MudText>
+        <MudText Typo="Typo.body1" Class="price-text">Male-৳@HealthPackage.PriceForMale/- Female-৳@HealthPackage.PriceForFemale/-</MudText>
+        <MudText Class="description-text mt-3">@HealthPackage.Description</MudText>
+        <MudGrid Class="mt-2 align-center">
+            <MudItem xs="2">
+                <MudIcon Icon="@Icons.Material.Filled.Description"></MudIcon>
+            </MudItem>
+            <MudItem xs="10">
+                <MudText Class="price-text">Tests Parameters</MudText>
+                <MudText Style="color:#6d6666;">@HealthPackage.Parameters+ Parameters</MudText>
+            </MudItem>
+        </MudGrid>
+       <MudGrid>
+           <MudItem xs="2">
+                <MudIcon Icon="@Icons.Material.Filled.FamilyRestroom"></MudIcon>
+           </MudItem>
+           <MudItem>
+                <MudText Style="color:#6d6666;">M/F of any age</MudText>
+           </MudItem>
+       </MudGrid>
+        
+       
+    </MudCardContent>
+    <MudCardActions Class="justify-space-between mx-3">
+        <MudButton Color="Color.Primary" Class="btn mb-4" OnClick="OpenBookDialog" Variant="Variant.Filled">Book Now</MudButton>
+        <MudButton Color="Color.Primary" Class="mb-4" Variant="Variant.Outlined" OnClick="OpenViewDetailsDialog">View Detail</MudButton>
+    </MudCardActions>
+</MudCard>
+
+<style>
+  .custom-card{
+        background-color: #f9f9f9;
+        box-shadow: none;
+        border-radius: 18px;
+  }
+
+  .price-text{
+        font-size: 13px;
+        color: #848e9f;
+  }
+
+  .description-text{
+        font-size: 13px;
+        color: #5d5d5d !important;
+  }
+
+  .btn{
+    box-shadow: none;
+  }
+</style>
+
+@code {
+    [Parameter]
+    public HealthPackageVM HealthPackage { get; set; } = new();
+    [Parameter]
+    public List<TestParameterVM> TestParameters { get; set; } = new();
+
+    private List<TestParameterVM> PackageParameters { get; set; }
+
+    private DialogOptions _dialogOption = new DialogOptions() { MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true, CloseButton = false };
+    private DialogOptions _dialogOptionLarge = new DialogOptions() { MaxWidth = MaxWidth.Large, FullWidth = true, DisableBackdropClick = true, CloseButton = false };
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            PackageParameters = await _httpService.Get<List<TestParameterVM>>($"/api/Hospital/package-parameters/{1}");
+        }
+        catch
+        {
+            PackageParameters = new List<TestParameterVM>();
+        }
+    }
+
+    private async Task OpenBookDialog()
+    {
+        var dialog = _dialogService.Show<AppointmentBookingDialog>("Book Now", _dialogOption);
+    }
+
+    private void OpenViewDetailsDialog()
+    {
+        foreach(var parameter in TestParameters)
+        {
+            parameter.isAcive = PackageParameters.Where(x => x.Id == parameter.Id).FirstOrDefault() != null;
+        }
+
+        var dialogData = new DialogParameters
+        {
+                ["AllParameters"] = TestParameters.ToList()
+        };
+
+        var dialog = _dialogService.Show<DetailsParameterDialog>(HealthPackage.Name+ " Package Tests", dialogData, _dialogOptionLarge);
+    }
+}

@@ -1,0 +1,57 @@
+﻿<MudDialog>
+    <DialogContent>
+        <MudGrid Class="ml-2 mt-3" Style="width: 95%;">
+            @foreach (var parameter in AllParameters)
+            {
+                @if (parameter.isAcive)
+                {
+                    <MudItem xs="3">
+                        <ul class="active-ul">
+                            <li>@parameter.Name</li>
+                        </ul>
+                    </MudItem>
+                }
+                else
+                {
+                    <MudItem xs="3">
+                        <ul class="inactive-ul">
+                            <li>@parameter.Name</li>
+                        </ul>
+                    </MudItem>
+                }
+            }
+        </MudGrid>
+        <div class="d-flex justify-content-end mt-4">
+            <MudButton Color="Color.Primary" Variant="Variant.Outlined" OnClick="Cancel">Cancel</MudButton>
+        </div>
+    </DialogContent>
+</MudDialog>
+
+<style>
+    .mud-grid-spacing-xs-3 > .mud-grid-item 
+    {
+
+      padding: 0px !important;
+    }
+
+    .active-ul
+    {
+        list-style-type: square;
+    }
+
+    .inactive-ul
+    {
+        list-style-type: square;
+        text-decoration: line-through;
+        opacity: 0.5;
+    }
+</style>
+
+@code {
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; }
+    [Parameter]
+    public List<TestParameterVM> AllParameters { get; set; } = new();
+
+    void Cancel() => MudDialog.Cancel();
+}

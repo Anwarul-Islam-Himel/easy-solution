@@ -1,0 +1,72 @@
+﻿<MudLayout>
+    <MudAppBar Color="Color.Transparent" Class="d-flex" Elevation="1">
+        <AuthorizeView >
+            <Authorized>
+                <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+            </Authorized>
+        </AuthorizeView>
+        <MudImage Style="width: 70px;" Src="Images/logo.png"></MudImage>
+        <MudSpacer />
+        <MudMenu AnchorOrigin="Origin.BottomRight" Dense="true">
+            <ActivatorContent>
+                <MudAvatar>
+                    <MudImage Src="Images/userlogin.png"></MudImage>
+                </MudAvatar>
+            </ActivatorContent>
+            <ChildContent>
+                <UserCard FullName="@_currentUser.FullName" />
+                <MudDivider Class="mb-2" />
+                <MudListItem Text="Logout" Icon="@Icons.Material.Filled.Logout" OnClick="Logout" />
+            </ChildContent>
+        </MudMenu>
+    </MudAppBar>
+    <MudDrawer @bind-Open="@_drawerOpen">
+        <NavMenu />
+    </MudDrawer>
+    <MudMainContent Class="px-4 mt-4">
+        @if (!IsLoading)
+        {
+            @ChildContent
+        }
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    bool _drawerOpen = true;
+    private bool IsLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var state = await _authStateProvider.GetAuthenticationStateAsync();
+            var user = state.User;
+
+            var fullName = user.GetFullName();
+            var userId = user.GetUserId();
+            _currentUser.SetState(fullName, userId);
+        }
+        catch
+        {
+
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+
+    private async Task Logout()
+    {
+        await ((AuthStateProvider)_authStateProvider).ClearStateAsync();
+        _navigator.NavigateTo("/");
+    }
+}

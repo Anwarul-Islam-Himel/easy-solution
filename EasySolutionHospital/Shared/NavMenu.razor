@@ -1,0 +1,7 @@
+﻿<MudItem>
+    <AuthorizeView Roles="@(UserRoleType.Admin.ToString())">
+        <Authorized>
+            <EasySolutionHospital.Pages.Admin.AdminNevMenu />
+        </Authorized>
+    </AuthorizeView>
+</MudItem>

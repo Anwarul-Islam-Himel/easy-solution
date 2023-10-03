@@ -1,0 +1,69 @@
+﻿<MudItem Class="d-flex justify-center mt-5" Style="background-color: #3c90bdff">
+    <MudGrid Class="pa-3" Style="width:80%;">
+        <MudItem xs="4">
+            <MudCard Elevation="0" Outlined="true" Style="height:270px;">
+                <MudCardHeader Class="d-flex justify-center gap-3" Style="background-color: white">
+                    <MudImage Style="width: 50px;" Src="Images/logo.png"></MudImage>
+                    <MudText Color="Color.Tertiary" Style="font-size: 22px; font-weight: 600;">Easy Solution Hospital</MudText>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudText Style="line-height:25px;">Bombay Hospital is a tertiary care hospital with all specialities and super specialities under one roof performing entire range of diagnostic, therapeutic and interventional procedures.</MudText>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+        <MudItem xs="4">
+            <MudCard Elevation="4" Style="background-color: #3c90bdff;height:270px;">
+                <MudCardHeader Class="d-flex justify-center">
+                    <MudText Style="font-weight: 500; font-size: 20px;color: white;">Doctor/Consultant</MudText>
+                </MudCardHeader>
+                <MudCardContent Class="d-flex flex-column gap-3">
+                    <MudItem Class="d-flex justify-center">
+                        <MudText>Your application has been sent to administrator </MudText>
+                    </MudItem>
+                    <MudItem Class="d-flex justify-center mt-5">
+                        <MudButton Color="Color.Tertiary" Variant="Variant.Filled">Apply Now</MudButton>
+                    </MudItem>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+        <MudItem xs="4">
+            <MudCard Elevation="0" Style="height:270px;">
+                <MudCardHeader Class="d-flex justify-center gap-3">
+                    <MudText Color="Color.Surface" Style="font-size: 18px; font-weight: 500;">Contact Details</MudText>
+                </MudCardHeader>
+                <MudCardContent Class="d-flex flex-column gap-3">
+                    <MudItem Class="d-flex gap-2">
+                        <MudIcon Icon="@Icons.Material.Filled.AddLocation" />
+                        <MudText Typo="Typo.body1">268V+MMH, Hospital Road, Near General Hospital, Pabna, 6600</MudText>
+                    </MudItem>
+                    <MudItem Class="d-flex gap-2">
+                        <MudIcon Icon="@Icons.Material.Filled.Phone" />
+                        <MudText Typo="Typo.body1">+8801704967125</MudText>
+                    </MudItem>
+                    <MudItem Class="d-flex gap-2">
+                        <MudIcon Icon="@Icons.Material.Filled.Email" />
+                        <MudLink>helpdesk@easysolutionhospital.com</MudLink>
+                    </MudItem>
+                    <MudItem Class="d-flex gap-2 justify-center">
+                        <MudIconButton Color="Color.Tertiary" OnClick="FacebookButtonClick" Icon="@Icons.Custom.Brands.Facebook" />
+                        <MudIconButton Color="Color.Tertiary" OnClick="FacebookButtonClick" Icon="@Icons.Custom.Brands.Instagram" />
+                        <MudIconButton Color="Color.Tertiary" OnClick="FacebookButtonClick" Icon="@Icons.Custom.Brands.YouTube" />
+                    </MudItem>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+</MudItem>
+<MudItem Class="pa-5">
+    <MudItem Class="d-flex gap-2 justify-center">
+        <MudIcon Icon="@Icons.Material.Filled.Copyright"> </MudIcon>
+        <MudText>2023 Easy Solution Hospital All Rights Reserved</MudText>
+    </MudItem>
+</MudItem>
+
+@code {
+    private void FacebookButtonClick()
+    {
+        
+    }
+}

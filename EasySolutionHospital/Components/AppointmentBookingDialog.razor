@@ -1,0 +1,51 @@
+﻿@using EasySolutionHospital.Shared.Enum;
+<MudDialog>
+    <DialogContent>
+        <EditForm Model="Model">
+            <MudGrid>
+                <MudItem xs="12">
+                    <MudTextField @bind-Value="Model.Name" Label="Name" For="(() => Model.Name)" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField @bind-Value="Model.Description" Label="Description" For="(() => Model.Description)" Lines="2" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                </MudItem>
+                <MudItem xs="3">
+                    <MudNumericField @bind-Value="Model.Age" Label="Age" For="(() => Model.Age)" Variant="Variant.Outlined" Margin="Margin.Dense"></MudNumericField>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudDatePicker Date="Model.AppointDate" Label="Appoint Date" Placeholder="Select Date" Variant="Variant.Outlined" Margin="Margin.Dense"></MudDatePicker>
+                </MudItem>
+                <MudItem xs="3">
+                    <MudSelect T="Gender" @bind-Value="Model.Gender" Label="Gender" For="(() => Model.Gender)" Variant="Variant.Outlined" Margin="Margin.Dense">
+                        @foreach(Gender gender in Enum.GetValues(typeof(Gender)))
+                        {
+                            <MudSelectItem Value="@gender">@gender.ToString()</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudTextField @bind-Value="Model.Phone" Label="Phone" For="(() => Model.Name)" Class="mb-3" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudTextField @bind-Value="Model.Email" Label="Email" For="(() => Model.Name)" Class="mb-3" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                </MudItem>
+            </MudGrid>
+        </EditForm>
+        <div class="d-flex justify-content-between mt-3">
+            <MudButton Color="Color.Primary" Variant="Variant.Outlined" OnClick="Cancel">Cancel</MudButton>
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Submit">Submit</MudButton>
+        </div>
+    </DialogContent>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public AppointmentFormModel Model { get; set; } = new();
+
+    void Submit() => MudDialog.Close(DialogResult.Ok(Model));
+
+    void Cancel() => MudDialog.Cancel();
+}

@@ -1,0 +1,31 @@
+﻿@inherits LayoutComponentBase
+
+<MudThemeProvider Theme="_theme"/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
+
+<AuthorizeView>
+    <NotAuthorized>
+        <AppBar />
+        @Body
+    </NotAuthorized>
+    <Authorized>
+        <AuthorizedLayout>
+            @Body
+        </AuthorizedLayout>
+    </Authorized>
+</AuthorizeView>
+
+
+@code{
+    private MudTheme _theme = new()
+        {
+            Palette = new()
+            {
+                Primary = "#3c90bd",
+                Secondary = "#1B5E20",
+                AppbarBackground = "#3c90bd",
+                Info = "#F9A825"
+            }
+        };
+}

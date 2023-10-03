@@ -1,0 +1,17 @@
+﻿<MudCard Elevation="0" Square="true">
+    <MudCardHeader>
+        <CardHeaderAvatar>
+            <MudAvatar>
+                <MudImage Src="Images/userlogin.png"></MudImage>
+            </MudAvatar>
+        </CardHeaderAvatar>
+        <CardHeaderContent>
+            <MudText Typo="Typo.body2">@FullName</MudText>
+        </CardHeaderContent>
+    </MudCardHeader>
+</MudCard>
+
+@code {
+    [Parameter]
+    public string FullName { get; set; }
+}

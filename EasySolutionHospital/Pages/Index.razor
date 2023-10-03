@@ -1,0 +1,12 @@
+﻿@page "/"
+
+<MudItem>
+    <AuthorizeView Roles="@(UserRoleType.Admin.ToString())">
+        <Authorized>
+            <EasySolutionHospital.Pages.Admin.AdminHomePage />
+        </Authorized>
+        <NotAuthorized>
+            <EasySolutionHospital.Pages.User.UserHomePage />
+        </NotAuthorized>
+    </AuthorizeView>
+</MudItem>
