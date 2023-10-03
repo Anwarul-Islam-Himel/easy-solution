@@ -1,12 +1,21 @@
 ﻿@page "/"
 
+@attribute [Authorize]
+
 <MudItem>
+    <AuthorizeView Roles="@(UserRoleType.Administrator.ToString())">
+        <Authorized>
+            <EasySolutionHospital.Pages.Administrator.AdministratorHomePage />
+        </Authorized>
+    </AuthorizeView>
     <AuthorizeView Roles="@(UserRoleType.Admin.ToString())">
         <Authorized>
             <EasySolutionHospital.Pages.Admin.AdminHomePage />
         </Authorized>
-        <NotAuthorized>
+    </AuthorizeView>
+    <AuthorizeView Roles="@(UserRoleType.User.ToString())">
+        <Authorized>
             <EasySolutionHospital.Pages.User.UserHomePage />
-        </NotAuthorized>
+        </Authorized>
     </AuthorizeView>
 </MudItem>

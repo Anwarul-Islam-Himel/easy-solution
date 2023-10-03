@@ -1,4 +1,5 @@
 ﻿using EasySolutionHospital.API.Services;
+using EasySolutionHospital.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EasySolutionHospital.API.Controllers
@@ -25,6 +26,13 @@ namespace EasySolutionHospital.API.Controllers
         public async Task<IActionResult> GetParametersByPackage(int id)
         {
             var response = await _hospitalService.GetTestParametersByIdAsync(id);
+            return Ok(response);
+        }
+
+        [HttpPost, Route("book-checkup")]
+        public async Task<IActionResult> BookingHealthCheckUp(AppointmentFormModel model)
+        {
+            var response = await _hospitalService.BookingHelthCheckUpAsync(model);
             return Ok(response);
         }
     }

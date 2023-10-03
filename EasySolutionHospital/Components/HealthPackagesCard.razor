@@ -3,7 +3,9 @@
     <MudCardContent>
         <MudText Typo="Typo.h6" Color="Color.Tertiary">@HealthPackage.Name</MudText>
         <MudText Typo="Typo.body1" Class="price-text">Male-৳@HealthPackage.PriceForMale/- Female-৳@HealthPackage.PriceForFemale/-</MudText>
-        <MudText Class="description-text mt-3">@HealthPackage.Description</MudText>
+        <MudItem Style="height: 50px;">
+            <MudText Class="description-text mt-3">@HealthPackage.Description</MudText>
+        </MudItem>
         <MudGrid Class="mt-2 align-center">
             <MudItem xs="2">
                 <MudIcon Icon="@Icons.Material.Filled.Description"></MudIcon>
@@ -67,7 +69,7 @@
     {
         try
         {
-            PackageParameters = await _httpService.Get<List<TestParameterVM>>($"/api/Hospital/package-parameters/{1}");
+            PackageParameters = await _httpService.Get<List<TestParameterVM>>($"/api/Hospital/package-parameters/{HealthPackage.Id}");
         }
         catch
         {
@@ -78,6 +80,20 @@
     private async Task OpenBookDialog()
     {
         var dialog = _dialogService.Show<AppointmentBookingDialog>("Book Now", _dialogOption);
+        var result = await dialog.Result;
+        if (!result.Cancelled)
+        {
+            var model = result.Data as AppointmentFormModel;
+            var response = await _httpService.Post<Unit>("/api/Hospital/book-checkup", model);
+            if (response.IsSuccess)
+            {
+                _snakBar.Add(response.Message, Severity.Success);
+            }
+            else
+            {
+                _snakBar.Add(response.Message, Severity.Error);
+            }
+        }
     }
 
     private void OpenViewDetailsDialog()

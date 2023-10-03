@@ -1,5 +1,4 @@
-﻿using Blazored.LocalStorage;
-using Blazored.SessionStorage;
+﻿using Blazored.SessionStorage;
 using EasySolutionHospital.Shared.ResponseModel;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.Security.Claims;

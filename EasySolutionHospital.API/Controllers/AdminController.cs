@@ -35,7 +35,7 @@ namespace EasySolutionHospital.API.Controllers
             return Ok(response);
         }
 
-        [HttpPut, Route("{id}")]
+        [HttpDelete, Route("{id}")]
         public async Task<IActionResult> DeleteAdministrator( string id)
         {
             var response = await _adminService.DeleteAdministrator(id);
