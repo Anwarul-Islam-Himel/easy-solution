@@ -76,7 +76,7 @@
     {
         var dialog = _dialogService.Show<AuthDialog>("Easy Solution", _dialogOption);
         var result = await dialog.Result;
-        if (!result.Cancelled)
+        if (!result.Canceled)
         {
             var registermodel = result.Data as RegisterModel;
             if(registermodel.FirstName != null)

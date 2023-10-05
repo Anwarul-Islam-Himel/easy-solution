@@ -21,7 +21,7 @@
                         <MudText>Your application has been sent to administrator </MudText>
                     </MudItem>
                     <MudItem Class="d-flex justify-center mt-5">
-                        <MudButton Color="Color.Tertiary" Variant="Variant.Filled">Apply Now</MudButton>
+                        <MudButton Color="Color.Tertiary" Variant="Variant.Filled" OnClick="ApplyDoctor">Apply Now</MudButton>
                     </MudItem>
                 </MudCardContent>
             </MudCard>
@@ -62,8 +62,23 @@
 </MudItem>
 
 @code {
+
+    private DialogOptions _dialogOption = new DialogOptions() { MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true, CloseButton = true };
     private void FacebookButtonClick()
     {
-        
+
+    }
+
+    private async Task ApplyDoctor()
+    {
+        var dialog = _dialogService.Show<ApplyDoctorDialog>("Apply Doctor", _dialogOption);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            var doctor = result.Data as DoctorViewModel;
+            var response = await _httpService.Post<Unit>("/api/Hospital/apply-doctor", doctor);
+            _snakBar.Add(response.Message, response.IsSuccess ? Severity.Success : Severity.Error);
+        }
     }
 }

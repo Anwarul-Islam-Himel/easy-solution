@@ -1,0 +1,46 @@
+﻿﻿<MudDialog>
+    <DialogContent>
+        <EditForm Model="@Doctor" OnValidSubmit="@OnValidSubmit">
+            <DataAnnotationsValidator />
+            <MudGrid>
+                <MudItem xs="4">
+                    <MudTextField @bind-Value="Doctor.FirstName" Label="First Name" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                </MudItem>
+                <MudItem xs="4">
+                    <MudTextField @bind-Value="Doctor.LastName" Label="Last Name" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                </MudItem>
+                <MudItem xs="4">
+                     <MudDatePicker @bind-Date="Doctor.DateOfBirth" Label="Birth Date" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                </MudItem>
+            </MudGrid>
+            <MudTextField @bind-Value="Doctor.NDoctorId" Label="National Doctor Id" Variant="Variant.Outlined" Margin="Margin.Dense" Class="mt-3 mb-3" For="(() => Doctor.NDoctorId)"></MudTextField>
+            <MudTextField @bind-Value="Doctor.Degree" Label="Degree" Variant="Variant.Outlined" Margin="Margin.Dense" Class="mb-3" For="(() => Doctor.Degree)"></MudTextField>
+            <MudTextField @bind-Value="Doctor.Specialization" Label="Specialization" Variant="Variant.Outlined" Margin="Margin.Dense" Class="mb-3"></MudTextField>
+            <MudTextField @bind-Value="Doctor.Address" Label="Address" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+               
+            <MudItem Class="mt-4 d-flex justify-end gap-2 mb-2">
+                <MudButton Variant="Variant.Filled" OnClick="Cancel">Cancel</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit">Save</MudButton>
+            </MudItem>
+        </EditForm>
+    </DialogContent>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; }
+
+    private DoctorViewModel Doctor { get; set; } = new();
+
+    private void Cancel() => MudDialog.Cancel();
+
+
+    public void OnValidSubmit(EditContext context)
+    {
+        bool isValid = context.Validate();
+        if(isValid)
+        {
+            MudDialog.Close(DialogResult.Ok(Doctor));
+        }
+    }
+}

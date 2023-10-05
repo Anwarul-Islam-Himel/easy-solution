@@ -75,7 +75,7 @@
         {
             var dialog = _dialogService.Show<AdministratorFormDialog>("New Administrator", _dialogOption);
             var result = await dialog.Result;
-            if (!result.Cancelled)
+            if (!result.Canceled)
             {
                 var model = result.Data as AdministratorsViewModel;
                 var response = await _httpService.Post<Unit>("/api/Admin", model);
@@ -134,7 +134,7 @@
             var dialog = _dialogService.Show<ConfirmationDialog>("Delete", dialogData);
             var result = await dialog.Result;
 
-            if (!result.Cancelled)
+            if (!result.Canceled)
             {
                 
             }

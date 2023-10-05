@@ -9,9 +9,9 @@ namespace EasySolutionHospital.API.EntityConfiguration
         public void Configure(EntityTypeBuilder<ApplicationUser> builder)
         {
             builder.HasKey(x => x.Id);
-            builder.Property(x => x.FirstName).HasColumnType("nvarchar(50)");
-            builder.Property(x => x.LastName).HasColumnType("nvarchar(50)");
-            builder.Property(x => x.Address).HasColumnType("nvarchar(100)");
+            builder.Property(x => x.FirstName).IsRequired(false).HasColumnType("nvarchar(50)");
+            builder.Property(x => x.LastName).IsRequired(false).HasColumnType("nvarchar(50)");
+            builder.Property(x => x.Address).IsRequired(false).HasColumnType("nvarchar(100)");
         }
     }
 }
