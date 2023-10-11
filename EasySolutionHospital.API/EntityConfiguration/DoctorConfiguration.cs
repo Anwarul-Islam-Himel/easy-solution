@@ -10,7 +10,8 @@ namespace EasySolutionHospital.API.EntityConfiguration
         {
             builder.ToTable(nameof(Doctor));
             builder.HasKey(x => x.Id);
-            builder.Property(x => x.Specialization).HasColumnType("nvarchar(250)");
+            builder.Property(x => x.Specialization).IsRequired(false).HasColumnType("nvarchar(250)");
+            builder.Property(x => x.NDoctorId).HasColumnType("nvarchar(250)");
             builder.Property(x => x.Degree).HasColumnType("nvarchar(250)");
 
             builder.HasOne(x => x.User)

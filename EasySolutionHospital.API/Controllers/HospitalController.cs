@@ -1,5 +1,6 @@
 ﻿using EasySolutionHospital.API.Services;
 using EasySolutionHospital.Models;
+using EasySolutionHospital.Shared.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EasySolutionHospital.API.Controllers
@@ -33,6 +34,13 @@ namespace EasySolutionHospital.API.Controllers
         public async Task<IActionResult> BookingHealthCheckUp(AppointmentFormModel model)
         {
             var response = await _hospitalService.BookingHelthCheckUpAsync(model);
+            return Ok(response);
+        }
+
+        [HttpPost, Route("apply-doctor")]
+        public async Task<IActionResult> ApplyDoctor(DoctorViewModel doctor)
+        {
+            var response = await _hospitalService.ApplyDoctorAsync(doctor);
             return Ok(response);
         }
     }

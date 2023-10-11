@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using EasySolutionHospital.API.Entities;
 using EasySolutionHospital.API.Entity;
 using EasySolutionHospital.API.Infrastructures;
 using EasySolutionHospital.Models;
 using EasySolutionHospital.Shared.ResponseModel;
+using EasySolutionHospital.Shared.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace EasySolutionHospital.API.Services
@@ -12,6 +14,7 @@ namespace EasySolutionHospital.API.Services
         Task<List<TestParameterVM>> GetAllTestParameterAsync();
         Task<List<TestParameterVM>> GetTestParametersByIdAsync(int id);
         Task<Unit> BookingHelthCheckUpAsync(AppointmentFormModel appointmentForm);
+        Task<Unit> ApplyDoctorAsync(DoctorViewModel doctor);
     }
     public class HospitalService : IHospitalService
     {
@@ -82,6 +85,30 @@ namespace EasySolutionHospital.API.Services
             catch
             {
                 return new List<TestParameterVM>();
+            }
+        }
+
+        public async Task<Unit> ApplyDoctorAsync(DoctorViewModel doctor)
+        {
+            try
+            {
+                var result = _mapper.Map<Doctor>(doctor);
+                await _context.Doctors.AddAsync(result);
+
+                await _context.SaveChangesAsync();
+                return new()
+                {
+                    IsSuccess = true,
+                    Message = "Successfully applied!"
+                };
+            }
+            catch(Exception ex)
+            {
+                return new()
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
             }
         }
     }

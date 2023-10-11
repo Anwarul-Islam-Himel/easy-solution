@@ -81,7 +81,7 @@
     {
         var dialog = _dialogService.Show<AppointmentBookingDialog>("Book Now", _dialogOption);
         var result = await dialog.Result;
-        if (!result.Cancelled)
+        if (!result.Canceled)
         {
             var model = result.Data as AppointmentFormModel;
             var response = await _httpService.Post<Unit>("/api/Hospital/book-checkup", model);
