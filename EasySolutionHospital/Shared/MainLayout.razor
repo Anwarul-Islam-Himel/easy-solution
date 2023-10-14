@@ -6,8 +6,9 @@
 
 <AuthorizeView>
     <NotAuthorized>
-        <AppBar />
-        <EasySolutionHospital.Pages.User.UserHomePage />
+        <UnAthorizedLayout>
+            @Body
+        </UnAthorizedLayout>
     </NotAuthorized>
     <Authorized>
         <AuthorizedLayout>

@@ -1,0 +1,54 @@
+﻿@page "/book-checkup"
+
+<MudTable Items="BookList" T="AppointmentModel">
+    <ColGroup>
+        <col />
+        <col />
+        <col />
+        <col />
+        <col />
+        <col />
+        <col style="width:50px;" />
+    </ColGroup>
+    <HeaderContent>
+        <MudTd><MudTableSortLabel SortBy="new Func<AppointmentModel, object>(x => x.HealthPackageName)">Package Name</MudTableSortLabel></MudTd>
+        <MudTd><MudTableSortLabel SortBy="new Func<AppointmentModel, object>(x => x.AppointDate)">Appoint Date</MudTableSortLabel></MudTd>
+        <MudTd><MudTableSortLabel SortBy="new Func<AppointmentModel, object>(x => x.Email)">Email</MudTableSortLabel></MudTd>
+        <MudTd><MudTableSortLabel SortBy="new Func<AppointmentModel, object>(x => x.Phone)">Phone Number</MudTableSortLabel></MudTd>
+        <MudTd><MudTableSortLabel SortBy="new Func<AppointmentModel, object>(x => x.Name)">Patient Name</MudTableSortLabel></MudTd>
+        <MudTd><MudTableSortLabel SortBy="new Func<AppointmentModel, object>(x => x.PriceForMale)">Price for Male</MudTableSortLabel></MudTd>
+        <MudTd><MudTableSortLabel SortBy="new Func<AppointmentModel, object>(x => x.PriceForFemale)">Price for Female</MudTableSortLabel></MudTd>
+        <MudTd>Action</MudTd>
+    </HeaderContent>
+    <NoRecordsContent>
+        <MudText Typo="Typo.h5" Class="mud-text-secondary mt-16 mb-16">No Book Package</MudText>
+    </NoRecordsContent>
+    <RowTemplate>
+        <MudTd>@context.HealthPackageName</MudTd>
+        <MudTd>@context.AppointDate</MudTd>
+        <MudTd>@context.Email</MudTd>
+        <MudTd>@context.Phone</MudTd>
+        <MudTd>@context.Name</MudTd>
+        <MudTd>@context.PriceForMale</MudTd>
+        <MudTd>@context.PriceForFemale</MudTd>
+        <MudTd>
+            <MudMenu Icon="@Icons.Material.Filled.MoreVert">
+                <MudMenuItem Icon="@Icons.Material.Filled.Edit">Complete</MudMenuItem>
+                <MudMenuItem Icon="@Icons.Material.Filled.Delete">Delete</MudMenuItem>
+            </MudMenu>
+        </MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager RowsPerPageString="Rows Per Page" />
+    </PagerContent>
+</MudTable>
+
+@code {
+    public List<AppointmentModel> BookList { get; set; } = new();
+    private bool isLoading { get; set; } = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        BookList = await _httpService.Get<List<AppointmentModel>>("/api/Hospital/book-packages");
+    }
+}

@@ -4,4 +4,9 @@
             <EasySolutionHospital.Pages.Admin.AdminNevMenu />
         </Authorized>
     </AuthorizeView>
+    <AuthorizeView Roles="@(UserRoleType.Administrator.ToString())">
+        <Authorized>
+            <EasySolutionHospital.Pages.Administrator.AdministratorNavMenu />
+        </Authorized>
+    </AuthorizeView>
 </MudItem>

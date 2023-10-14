@@ -5,10 +5,9 @@
     <MudImage Style="width: 70px;" Src="Images/logo.png"></MudImage>
     <MudSpacer />
     <MudItem Class="d-flex flex-row gap-2 mr-8">
-        <MudButton Class="appber-button">Home</MudButton>
+        <MudButton Class="appber-button" OnClick="Home">Home</MudButton>
         <MudButton Class="appber-button">Service</MudButton>
         <MudButton Class="appber-button">Appointment</MudButton>
-        <MudButton Class="appber-button">About</MudButton>
     </MudItem>
     @if (isAuthorized)
     {
@@ -21,6 +20,8 @@
             <ChildContent>
                 <MudDivider Class="mb-2" />
                 <MudListItem Text="Logout" Icon="@Icons.Material.Filled.Logout" OnClick="Logout" />
+                <MudDivider Class="mb-2" />
+                <MudListItem Text="My Appointment" Icon="@Icons.Material.Filled.AssignmentInd" OnClick="MyAppointment" />
             </ChildContent>
         </MudMenu>
     }
@@ -35,6 +36,8 @@
             <ChildContent>
                 <MudDivider Class="mb-2" />
                 <MudListItem Text="Login" Icon="@Icons.Material.Filled.Login" OnClick="Login" />
+                <MudDivider Class="mb-2" />
+                <MudListItem Text="My Appointment" Icon="@Icons.Material.Filled.AssignmentInd" OnClick="MyAppointment" />
             </ChildContent>
         </MudMenu>
     }
@@ -74,39 +77,69 @@
 
     private async Task Login()
     {
-        var dialog = _dialogService.Show<AuthDialog>("Easy Solution", _dialogOption);
-        var result = await dialog.Result;
-        if (!result.Canceled)
+        try
         {
-            var registermodel = result.Data as RegisterModel;
-            if(registermodel.FirstName != null)
+            var dialog = _dialogService.Show<AuthDialog>("Easy Solution", _dialogOption);
+            var result = await dialog.Result;
+            if (!result.Canceled)
             {
-                var response = await _httpService.Post<LoginResponse>("/api/auth/signup", registermodel);
-                if(response != null)
+                var registermodel = result.Data as RegisterModel;
+                if (registermodel.FirstName != null)
                 {
-                    var authValue = JsonSerializer.Serialize<LoginResponse>(response);
-                    await ((AuthStateProvider)_authStateProvider).SetStateAsync(authValue);
-                }
-            }
-            else
-            {
-                var logInModel = new SigninModel
+                    var response = await _httpService.Post<LoginResponse>("/api/auth/signup", registermodel);
+                    if (response != null)
                     {
-                        Email = registermodel.Email,
-                        Password = registermodel.Password
-                    };
-
-                var response = await _httpService.Post<LoginResponse>("/api/auth/signin", registermodel);
-                if (response != null)
+                        var authValue = JsonSerializer.Serialize<LoginResponse>(response);
+                        await ((AuthStateProvider)_authStateProvider).SetStateAsync(authValue);
+                    }
+                }
+                else
                 {
-                    var authValue = JsonSerializer.Serialize<LoginResponse>(response);
-                    await ((AuthStateProvider)_authStateProvider).SetStateAsync(authValue);
-                    isAuthorized = true;
+                    var logInModel = new SigninModel
+                        {
+                            Email = registermodel.Email,
+                            Password = registermodel.Password
+                        };
+
+                    var response = await _httpService.Post<LoginResponse>("/api/auth/signin", registermodel);
+                    if (response != null)
+                    {
+                        var authValue = JsonSerializer.Serialize<LoginResponse>(response);
+                        await ((AuthStateProvider)_authStateProvider).SetStateAsync(authValue);
+                        isAuthorized = true;
+
+                        if (response.UserRole == UserRoleType.Admin)
+                        {
+                            _navigator.NavigateTo("admin");
+                        }
+                        else if (response.UserRole == UserRoleType.Administrator)
+                        {
+                            _navigator.NavigateTo("administrator");
+                        }
+                        else if (response.UserRole == UserRoleType.Doctor)
+                        {
+                            _navigator.NavigateTo("doctor");
+                        }
+                    }
                 }
             }
         }
-        
+        catch
+        {
+            _snakBar.Add("Email and password doesn't match", Severity.Error);
+        }
+
+    }
+
+    private void MyAppointment()
+    {
+        _navigator.NavigateTo("myAppointment");
     }
 
     private void Logout() => isAuthorized = !isAuthorized;
+
+    private void Home()
+    {
+        _navigator.NavigateTo("/");
+    }
 }

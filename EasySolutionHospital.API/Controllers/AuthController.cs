@@ -35,5 +35,12 @@ namespace EasySolutionHospital.API.Controllers
             }
             return BadRequest();
         }
+
+        [HttpGet, Route("currentUser/{userId}")]
+        public async Task<IActionResult> GetCurrentUser(string userId)
+        {
+            var response = await _authService.GetLoggedUserInformation(userId);
+            return Ok(response);
+        }
     }
 }

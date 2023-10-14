@@ -24,10 +24,10 @@
                     </MudSelect>
                 </MudItem>
                 <MudItem xs="6">
-                    <MudTextField @bind-Value="Model.Phone" Label="Phone" For="(() => Model.Name)" Class="mb-3" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                    <MudTextField @bind-Value="Model.Phone" Label="Phone" For="(() => Model.Phone)" Class="mb-3" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
                 </MudItem>
                 <MudItem xs="6">
-                    <MudTextField @bind-Value="Model.Email" Label="Email" For="(() => Model.Name)" Class="mb-3" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                    <MudTextField @bind-Value="Model.Email" Label="Email" For="(() => Model.Email)" Class="mb-3" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
                 </MudItem>
             </MudGrid>
         </EditForm>
@@ -43,7 +43,7 @@
     MudDialogInstance MudDialog { get; set; }
 
     [Parameter]
-    public AppointmentFormModel Model { get; set; } = new();
+    public AppointmentModel Model { get; set; } = new();
 
     void Submit() => MudDialog.Close(DialogResult.Ok(Model));
 

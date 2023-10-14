@@ -1,0 +1,115 @@
+﻿@page "/applied-doctor"
+
+<MudTable Items="Doctors" Loading="isLoading" T="DoctorViewModel" Dense="true" Hover="true"> 
+    <ColGroup>
+        <col />
+        <col />
+        <col />
+        <col />
+        <col />
+        <col />
+        <col style="width:50px;" />
+    </ColGroup>
+    <HeaderContent>
+        <MudTd><MudTableSortLabel SortBy="new Func<DoctorViewModel, object>(x => x.FirstName)">Doctor Name</MudTableSortLabel></MudTd>
+        <MudTd><MudTableSortLabel SortBy="new Func<DoctorViewModel, object>(x => x.Degree)">Degree</MudTableSortLabel></MudTd>
+        <MudTd><MudTableSortLabel SortBy="new Func<DoctorViewModel, object>(x => x.Email)">Email</MudTableSortLabel></MudTd>
+        <MudTd><MudTableSortLabel SortBy="new Func<DoctorViewModel, object>(x => x.PhonenNumber)">Phone Number</MudTableSortLabel></MudTd>
+        <MudTd><MudTableSortLabel SortBy="new Func<DoctorViewModel, object>(x => x.Specialization)">Specialization</MudTableSortLabel></MudTd>
+        <MudTd><MudTableSortLabel SortBy="new Func<DoctorViewModel, object>(x => x.NDoctorId)">Registration Number</MudTableSortLabel></MudTd>
+        <MudTd><MudTableSortLabel SortBy="new Func<DoctorViewModel, object>(x => x.DateOfBirth)">Date of birth</MudTableSortLabel></MudTd>
+        <MudTd>Action</MudTd>
+    </HeaderContent>
+    <NoRecordsContent>
+        <MudText Typo="Typo.h5" Class="mud-text-secondary mt-16 mb-16">No Doctors</MudText>
+    </NoRecordsContent>
+    <RowTemplate>
+        <MudTd>@context.FirstName @context.LastName</MudTd>
+        <MudTd>@context.Degree</MudTd>
+        <MudTd>@context.Email</MudTd>
+        <MudTd>@context.PhonenNumber</MudTd>
+        <MudTd>@context.Specialization</MudTd>
+        <MudTd>@context.NDoctorId</MudTd>
+        <MudTd>@context.DateOfBirth.Value.ToString("dd/MM/yyyy")</MudTd>
+        <MudTd>
+            <MudMenu Icon="@Icons.Material.Filled.MoreVert">
+                <MudMenuItem IconColor="Color.Tertiary" Icon="@Icons.Material.Filled.Approval" OnClick="() => Approved(context)">Approved</MudMenuItem>
+                <MudMenuItem IconColor="Color.Error" Icon="@Icons.Material.Filled.Cancel">Denied</MudMenuItem>
+                <MudMenuItem Icon="@Icons.Material.Filled.Edit" OnClick="() => Edit(context)">Edit</MudMenuItem>
+            </MudMenu>
+        </MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager RowsPerPageString="Rows Per Page" />
+    </PagerContent>
+</MudTable>
+
+@code{
+    private List<DoctorViewModel> Doctors{ get; set; }
+    private bool isLoading { get; set; } = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            isLoading = true;
+            Doctors = await _httpService.Get<List<DoctorViewModel>>("/api/Administrator/doctors");
+        }
+        catch
+        {
+            Doctors = new List<DoctorViewModel>();
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private async Task Approved(DoctorViewModel doctor)
+    {
+        var dialogData = new DialogParameters
+            {
+                ["ContentText"] = "Are you sure you want to approved this!",
+                ["SubmitButtonText"] = "Approved",
+                ["ButtonColor"] = Color.Tertiary
+            };
+        var dialog = _dialogService.Show<ConfirmationDialog>("Approved", dialogData);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            var response = await _httpService.Get<Unit>($"/api/Administrator/doctor-approved/{doctor.Id}");
+            if (response.IsSuccess)
+            {
+                doctor.Approved = true;
+                Doctors.Remove(doctor);
+                _snakBar.Add("Successfully approved doctor!", Severity.Success);
+            }
+            else
+            {
+                _snakBar.Add(response.Message, Severity.Error);
+            }
+        }
+    }
+
+    private async Task Edit(DoctorViewModel doctor)
+    {
+        var dialog = _dialogService.Show<EditDoctorProfileDialog>("Edit Profile");
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            var model = result.Data as DoctorEditFormModel;
+            var response = await _httpService.Post<Unit>($"/api/Administrator/edit-doctor/{doctor.Id}", model);
+            if (response.IsSuccess)
+            {
+                _snakBar.Add("Successfully approved doctor!", Severity.Success);
+            }
+            else
+            {
+                _snakBar.Add(response.Message, Severity.Error);
+            }
+        }
+     
+    }
+}

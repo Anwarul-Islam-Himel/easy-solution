@@ -19,4 +19,8 @@
     <ProjectReference Include="..\EasySolutionHospital.Shared\EasySolutionHospital.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\DoctorImages\" />
+  </ItemGroup>
+
 </Project>

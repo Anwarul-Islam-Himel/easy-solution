@@ -31,7 +31,7 @@ namespace EasySolutionHospital.API.Controllers
         }
 
         [HttpPost, Route("book-checkup")]
-        public async Task<IActionResult> BookingHealthCheckUp(AppointmentFormModel model)
+        public async Task<IActionResult> BookingHealthCheckUp(AppointmentModel model)
         {
             var response = await _hospitalService.BookingHelthCheckUpAsync(model);
             return Ok(response);
@@ -41,6 +41,41 @@ namespace EasySolutionHospital.API.Controllers
         public async Task<IActionResult> ApplyDoctor(DoctorViewModel doctor)
         {
             var response = await _hospitalService.ApplyDoctorAsync(doctor);
+            return Ok(response);
+        }
+
+	    [HttpGet, Route("book-packages")]
+        public async Task<IActionResult> GetBookPackage()
+        {
+            var ressponse = await _hospitalService.GetAllHelthBookingAsync();
+            return Ok(ressponse);
+        }
+
+        [HttpGet, Route("my-appointment/{userId}")]
+        public async Task<IActionResult> GetMyappointment(string userId)
+        {
+            var ressponse = await _hospitalService.GetMyAppointmentById(userId);
+            return Ok(ressponse);
+        }
+
+        [HttpGet, Route("search-appointment/{email}")]
+        public async Task<IActionResult> SearchAppointment(string email)
+        {
+            var ressponse = await _hospitalService.GetMyAppointmentByEmail(email);
+            return Ok(ressponse);
+        }
+
+        [HttpGet, Route("approved-doctor")]
+        public async Task<IActionResult> GetApprovedDoctor()
+        {
+            var response = await _hospitalService.GetApprovedDoctor();
+            return Ok(response);
+        }
+
+        [HttpGet, Route("doctor-details/{id}")]
+        public async Task<IActionResult> GetDoctorById(int id)
+        {
+            var response = await _hospitalService.GetDoctorById(id);
             return Ok(response);
         }
     }

@@ -1,0 +1,77 @@
+﻿@page "/doctor-details/{id:int}"
+
+<MudItem Class="pa-5 mt-5">
+    <MudGrid>
+        <MudItem xs="6" Class="pa-4">
+            <MudPaper Elevation="20" Class="pa-2">
+                <MudItem Class="d-flex justify-center" >
+                    <MudImage Src="@Doctor.ImagePath" ObjectFit="ObjectFit.Fill" Style="width: 580px; height: 490px;" />
+                </MudItem>
+                <MudItem Class="d-flex justify-center mt-3">
+                    <MudText Color="Color.Primary" Typo="Typo.h6">Dr. @Doctor.FirstName @Doctor.LastName</MudText>
+                </MudItem>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="6" Class="mt-5">
+            <MudPaper Elevation="0" Outlined="true" Class="d-flex pa-4 flex-column gap-2">
+                <MudPaper Elevation="4" Class="pa-2 d-flex paper-bg gap-2">
+                    <MudText Class="header-text">Speciality :</MudText>
+                    <MudText>@Doctor.Specialization</MudText>
+                </MudPaper>
+                <MudPaper Elevation="4" Class="pa-2 d-flex gap-2">
+                    <MudText Class="header-text">Qualification :</MudText>
+                    <MudText> @Doctor.Degree</MudText>
+                </MudPaper>
+                <MudPaper Elevation="4" Class="pa-2 d-flex paper-bg gap-2">
+                    <MudText Class="header-text">Consulting Days & Timings :</MudText>
+                    <MudText> @Doctor.ConsultingTime</MudText>
+                </MudPaper>
+                <MudPaper Elevation="4" Class="pa-2 d-flex gap-2">
+                    <MudText Class="header-text">Consulting Room :</MudText>
+                    <MudText>@Doctor.RoomNumber</MudText>
+                </MudPaper>
+                <MudPaper Elevation="4" Class="pa-2 d-flex paper-bg gap-2">
+                    <MudText Class="header-text">Email :</MudText>
+                    <MudText>@Doctor.Email</MudText>
+                </MudPaper>
+                <MudPaper Elevation="4" Class="pa-2 d-flex gap-2">
+                    <MudText Class="header-text" >Fees :</MudText>
+                    <MudText Color="Color.Tertiary">@Doctor.FeeAmount</MudText>
+                </MudPaper>
+            </MudPaper>
+            <MudItem Class="d-flex justify-center mt-6">
+                <MudButton Color="Color.Tertiary" Variant="Variant.Filled"><MudText>Book Appointment</MudText></MudButton>
+            </MudItem>
+        </MudItem>
+    </MudGrid>
+</MudItem>
+
+<style>
+     .header-text{
+         font-size: 16px;
+         font-weight : 800;
+     }
+
+     .paper-bg{
+        background-color: #e4f0fa !important;
+     }
+</style>
+
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+    public DoctorViewModel Doctor { get; set; } = new DoctorViewModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            Doctor = await _httpService.Get<DoctorViewModel>($"/api/Hospital/doctor-details/{id}");
+        }
+        catch
+        {
+            Doctor = new();
+        }
+    }
+}

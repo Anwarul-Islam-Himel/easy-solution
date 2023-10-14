@@ -1,0 +1,46 @@
+﻿@page "/myAppointment"
+
+<AuthorizeView Roles="@(UserRoleType.User.ToString())">
+    <Authorized>
+        <MudItem Class="d-flex flex-column">
+            <MudItem Class="d-flex justify-center">
+                <MudText Typo="Typo.h6">@_currentUser.FullName</MudText>
+            </MudItem>
+            <MudItem Class="d-flex justify-center">
+                <MudText>@currentDate</MudText>
+            </MudItem>
+        </MudItem>
+    </Authorized>
+    <NotAuthorized>
+        <MudItem Class="d-flex flex-column">
+            <MudItem Class="d-flex justify-center">
+                <MudText Typo="Typo.body2">You are not login yet, please login to see your appointment or search by your email</MudText>
+            </MudItem>
+            <MudItem Class="d-flex justify-center">
+                <MudText>@currentDate</MudText>
+            </MudItem>
+        </MudItem>
+        <MudItem Class="d-flex justify-center">
+            <MudTextField @bind-Value="_searchAppointment" Placeholder="Search" Adornment="Adornment.Start" Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-3" MaxLength="40"></MudTextField>
+            <MudIconButton Color="Color.Tertiary" Icon="@Icons.Material.Filled.Search" Variant="Variant.Filled"></MudIconButton>
+        </MudItem>
+    </NotAuthorized>
+</AuthorizeView>
+
+
+
+@code {
+    public List<AppointmentModel> Appointments { get; set; } = new();
+    public DateTime currentDate { get; set; } = DateTime.Now;
+    public string _searchAppointment { get; set; } = string.Empty;
+
+    protected override Task OnInitializedAsync()
+    {
+        return base.OnInitializedAsync();
+    }
+
+    private async Task SearchMyAppointment()
+    {
+        
+    }
+}

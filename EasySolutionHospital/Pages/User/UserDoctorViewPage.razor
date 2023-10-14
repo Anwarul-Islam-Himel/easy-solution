@@ -1,0 +1,33 @@
+﻿@page "/view-doctor"
+
+<MudItem Class="d-flex justify-center mt-5">
+    <MudItem Style="width: 300px;">
+        <MudTextField @bind-Value="_searchAppointment" Placeholder="Search for doctors" Adornment="Adornment.Start" Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-3 mb-4" MaxLength="40" />
+    </MudItem>
+</MudItem>
+<MudItem Class="d-flex justify-center mt-4 mb-5">
+    <MudItem Class="d-flex flex-wrap gap-4 justify-center" Style="width: 90%;">
+        @foreach (var doctor in Doctors)
+        {
+            <MudItem Style="width:25%">
+                <DoctorCard Doctor="@doctor" />
+            </MudItem>
+        }
+    </MudItem>
+</MudItem>
+@code {
+    public List<DoctorViewModel> Doctors { get; set; } = new();
+    public string _searchAppointment { get; set; } = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            Doctors = await _httpService.Get<List<DoctorViewModel>>("/api/Hospital/approved-doctor");
+        }
+        catch
+        {
+            Doctors = new List<DoctorViewModel>();
+        }
+    }
+}

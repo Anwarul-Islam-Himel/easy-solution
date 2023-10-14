@@ -1,21 +1,26 @@
 ﻿using EasySolutionHospital.API.Entity;
+using EasySolutionHospital.API.Infrastructures;
 using EasySolutionHospital.Models;
 using EasySolutionHospital.Shared.Enum;
 using EasySolutionHospital.Shared.ResponseModel;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 namespace EasySolutionHospital.API.Services
 {
     public interface IAuthService
     {
         Task<LoginResponse> SignIn(SigninModel model);
         Task<LoginResponse> SignUp(RegisterModel model);
+        Task<AppointmentModel> GetLoggedUserInformation(string userId);
     }
     public class AuthService : IAuthService
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        public AuthService(UserManager<ApplicationUser> userManager)
+        private readonly AppDbContext _context;
+        public AuthService(UserManager<ApplicationUser> userManager, AppDbContext dbContext)
         {
             _userManager = userManager;
+            _context = dbContext;
         }
 
         public async Task<LoginResponse> SignUp(RegisterModel model)
@@ -64,6 +69,16 @@ namespace EasySolutionHospital.API.Services
                 {
                     var useRole = await _userManager.GetRolesAsync(user);
 
+                    if(useRole.FirstOrDefault() == UserRoleType.Doctor.ToString())
+                    {
+                        var doctor = await _context.Doctors
+                            .Where(x => x.UserId == user.Id).FirstOrDefaultAsync();
+                        if (!doctor.Approved)
+                        {
+                            return null;
+                        }
+                    }
+
                     return new()
                     {
                         Id = user.Id,
@@ -73,6 +88,31 @@ namespace EasySolutionHospital.API.Services
                 }
                 return null;
                
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public async Task<AppointmentModel> GetLoggedUserInformation(string userId)
+        {
+            try
+            {
+                var user = await _userManager.FindByIdAsync(userId);
+                if(user != null)
+                {
+                    return new()
+                    {
+                        Name = user.FirstName + user.LastName,
+                        Age = DateTime.Today.Year - user.DateOfBirth.Year,
+                        Phone = user.PhoneNumber,
+                        Email = user.Email
+                    };
+                }
+
+                return null;
+
             }
             catch (Exception ex)
             {

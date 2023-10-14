@@ -9,6 +9,11 @@ namespace EasySolutionHospital.API.Entities
         public string Degree { get; set; }
         public string UserId { get; set; }
         public string NDoctorId { get; set; }
+        public bool Approved { get; set; }
+        public string? ConsultingTime { get; set; }
+        public int? RoomNumber { get; set; }
+        public int? FeeAmount { get; set; }
+        public string? ImagePath { get; set; }
         public virtual ApplicationUser User { get; set; }
     }
 }

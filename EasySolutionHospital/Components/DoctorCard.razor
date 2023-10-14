@@ -1,5 +1,35 @@
-﻿<h3>DoctorCard</h3>
+﻿
+<MudCard Class="custom-card mx-2" Style="height : 375px;">
+    <MudCardHeader Class="custom-border d-flex flex-column" Style="height: 110px;">
+        <MudText Typo="Typo.h6">Dr. @Doctor.FirstName @Doctor.LastName</MudText>
+        <MudText Color="Color.Primary" Typo="Typo.body1"> @Doctor.Specialization</MudText>
+    </MudCardHeader>
+    <MudCardContent Class="d-flex flex-column gap-2 custom-border">
+        <MudImage Src="@Doctor.ImagePath" Style="height: 180px;" ObjectFit="ObjectFit.Fill"/>
+    </MudCardContent>
+    <MudCardActions Class="justify-center">
+        <MudButton Color="Color.Primary" Style="box-shadow: 0px !important;" Variant="Variant.Filled" OnClick="ViewProfile"><MudText>View Profile</MudText></MudButton>
+    </MudCardActions>
+</MudCard>
+
+<style>
+    .custom-card {
+        background-color: #f9f9f9;
+        box-shadow: none;
+        border-radius: 18px;
+    }
+
+    .custom-border{
+        border-bottom: 1px solid #E7E6E6;
+    }
+</style>
 
 @code {
+    [Parameter]
+    public DoctorViewModel Doctor { get; set; } = new DoctorViewModel();
 
+    private void ViewProfile()
+    {
+        _navigator.NavigateTo($"doctor-details/{Doctor.Id}");
+    }
 }

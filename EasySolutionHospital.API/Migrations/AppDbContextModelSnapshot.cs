@@ -68,13 +68,28 @@ namespace EasySolutionHospital.API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("Approved")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ConsultingTime")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Degree")
                         .IsRequired()
                         .HasColumnType("nvarchar(250)");
 
+                    b.Property<int?>("FeeAmount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ImagePath")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("NDoctorId")
                         .IsRequired()
                         .HasColumnType("nvarchar(250)");
+
+                    b.Property<int?>("RoomNumber")
+                        .HasColumnType("int");
 
                     b.Property<string>("Specialization")
                         .HasColumnType("nvarchar(250)");
@@ -200,6 +215,9 @@ namespace EasySolutionHospital.API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<int>("PackageId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Phone")
                         .IsRequired()
                         .HasColumnType("nvarchar(30)");
@@ -220,6 +238,12 @@ namespace EasySolutionHospital.API.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("PriceForFemale")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PriceForMale")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

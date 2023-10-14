@@ -1,0 +1,26 @@
+﻿﻿<MudPaper Outlined="true" Class="border-dashed pa-4">
+    <MudGrid Justify=Justify.SpaceBetween>
+        <MudItem xs="3" Class="d-flex flex-column gap-1">
+            <MudText Typo="Typo.body2">@Model.Name</MudText>
+            <MudText Typo="Typo.body2">@Model.Email</MudText>
+        </MudItem>
+        <MudItem xs="7">
+            @if (string.IsNullOrEmpty(Model.DoctorName))
+            {
+                <MudText Color="Color.Primary" Typo="Typo.body1">@Model.HealthPackageName</MudText>
+            }
+            else
+            {
+                <MudText Color="Color.Primary" Typo="Typo.body1">@Model.DoctorName</MudText>
+            }
+        </MudItem>
+        <MudItem xs="2">
+            <MudText Typo="Typo.body2">@Model.AppointDate.ToString("dd/MM/yyyy")</MudText>
+        </MudItem>
+    </MudGrid>
+</MudPaper>
+
+@code {
+    [Parameter]
+    public AppointmentModel Model { get; set; } = new();
+}

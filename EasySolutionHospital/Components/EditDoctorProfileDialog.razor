@@ -1,0 +1,44 @@
+﻿﻿<MudDialog>
+    <DialogContent>
+        <EditForm Model="@Model" OnValidSubmit="@OnValidSubmit">
+            <DataAnnotationsValidator />
+            <MudGrid>
+                <MudItem xs="6">
+                    <MudTextField @bind-Value="Model.ConsultingTime" Label="Consulting Time" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudTextField @bind-Value="Model.RoomNumber" Label="Room Number" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudNumericField @bind-Value="Model.FeeAmount" Label="Fees" Variant="Variant.Outlined" Margin="Margin.Dense"></MudNumericField>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudTextField @bind-Value="Model.ImagePath" Label="Image" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                </MudItem>
+            </MudGrid>
+            <MudItem Class="mt-4 d-flex justify-end gap-2 mb-2">
+                <MudButton Variant="Variant.Filled" OnClick="Cancel">Cancel</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit">Save</MudButton>
+            </MudItem>
+        </EditForm>
+    </DialogContent>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; }
+
+    private DoctorEditFormModel Model { get; set; } = new();
+
+    private void Cancel() => MudDialog.Cancel();
+
+
+    public void OnValidSubmit(EditContext context)
+    {
+        bool isValid = context.Validate();
+        if (isValid)
+        {
+            MudDialog.Close(DialogResult.Ok(Model));
+        }
+    }
+}

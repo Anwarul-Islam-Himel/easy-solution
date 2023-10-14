@@ -12,6 +12,12 @@
                 <MudItem xs="4">
                      <MudDatePicker @bind-Date="Doctor.DateOfBirth" Label="Birth Date" Variant="Variant.Outlined" Margin="Margin.Dense" />
                 </MudItem>
+                <MudItem xs="6">
+                    <MudTextField @bind-Value="Doctor.Email" Label="Email" For="(() => Doctor.Email)" Class="mb-3" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudTextField @bind-Value="Doctor.PhonenNumber" Label="Phone" For="(() => Doctor.PhonenNumber)" Class="mb-3" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                </MudItem>
             </MudGrid>
             <MudTextField @bind-Value="Doctor.NDoctorId" Label="National Doctor Id" Variant="Variant.Outlined" Margin="Margin.Dense" Class="mt-3 mb-3" For="(() => Doctor.NDoctorId)"></MudTextField>
             <MudTextField @bind-Value="Doctor.Degree" Label="Degree" Variant="Variant.Outlined" Margin="Margin.Dense" Class="mb-3" For="(() => Doctor.Degree)"></MudTextField>

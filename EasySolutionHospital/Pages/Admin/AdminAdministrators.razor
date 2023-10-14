@@ -56,7 +56,7 @@
     {
         try
         {
-            Administrators = await _httpService.Get<List<AdministratorsViewModel>>($"/api/Admin");
+            Administrators = await _httpService.Get<List<AdministratorsViewModel>>("/api/Admin");
         }
         catch
         {
