@@ -1,46 +1,58 @@
-﻿@using EasySolutionHospital.Shared.ResponseModel;
+﻿@using Blazored.SessionStorage;
+@using EasySolutionHospital.Shared.ResponseModel;
 @using System.Text.Json;
+@inject ISessionStorageService _sessionStorage
+
 
 <MudAppBar Color="Color.Transparent" Fixed="false" Elevation="1">
     <MudImage Style="width: 70px;" Src="Images/logo.png"></MudImage>
     <MudSpacer />
-    <MudItem Class="d-flex flex-row gap-2 mr-8">
-        <MudButton Class="appber-button" OnClick="Home">Home</MudButton>
-        <MudButton Class="appber-button">Service</MudButton>
-        <MudButton Class="appber-button">Appointment</MudButton>
-    </MudItem>
-    @if (isAuthorized)
-    {
-        <MudMenu AnchorOrigin="Origin.BottomRight" Dense="true">
-            <ActivatorContent>
-                <MudAvatar>
-                    <MudImage Src="Images/userlogin.png"></MudImage>
-                </MudAvatar>
-            </ActivatorContent>
-            <ChildContent>
-                <MudDivider Class="mb-2" />
-                <MudListItem Text="Logout" Icon="@Icons.Material.Filled.Logout" OnClick="Logout" />
-                <MudDivider Class="mb-2" />
-                <MudListItem Text="My Appointment" Icon="@Icons.Material.Filled.AssignmentInd" OnClick="MyAppointment" />
-            </ChildContent>
-        </MudMenu>
-    }
-    else
-    {
-        <MudMenu AnchorOrigin="Origin.BottomRight" Dense="true">
-            <ActivatorContent>
-                <MudAvatar>
-                    <MudImage Src="Images/userlogout.png"></MudImage>
-                </MudAvatar>
-            </ActivatorContent>
-            <ChildContent>
-                <MudDivider Class="mb-2" />
-                <MudListItem Text="Login" Icon="@Icons.Material.Filled.Login" OnClick="Login" />
-                <MudDivider Class="mb-2" />
-                <MudListItem Text="My Appointment" Icon="@Icons.Material.Filled.AssignmentInd" OnClick="MyAppointment" />
-            </ChildContent>
-        </MudMenu>
-    }
+    <AuthorizeView Roles="@(UserRoleType.User.ToString())">
+        <Authorized>
+            <MudItem Class="d-flex flex-row gap-2 mr-8">
+                <MudButton Class="appber-button" OnClick="Home">Home</MudButton>
+                <MudButton Class="appber-button">Service</MudButton>
+                <MudButton Class="appber-button" OnClick="ViewDoctor">Appointment</MudButton>
+                <MudButton Class="appber-button" OnClick="Reacharge">Reacharge</MudButton>
+            </MudItem>
+            <MudMenu AnchorOrigin="Origin.BottomRight" Dense="true">
+                <ActivatorContent>
+                    <MudAvatar>
+                        <MudImage Src="Images/userlogin.png"></MudImage>
+                    </MudAvatar>
+                </ActivatorContent>
+                <ChildContent>
+                    <UserCard FullName="@_currentUser.FullName" />
+                    <MudDivider Class="mb-2" />
+                    <MudListItem Text="My Appointment" Icon="@Icons.Material.Filled.AssignmentInd" OnClick="MyAppointment" />
+                    <MudListItem Icon="@Icons.Material.Filled.CurrencyPound">
+                        <MudText Color="Color.Tertiary" Typo="Typo.body1">@_currentUser.UserAmount</MudText>
+                    </MudListItem>
+                    <MudDivider Class="mb-2" />
+                    <MudListItem Text="Logout" Icon="@Icons.Material.Filled.Logout" OnClick="Logout" />
+                </ChildContent>
+            </MudMenu>
+        </Authorized>
+        <NotAuthorized>
+            <MudItem Class="d-flex flex-row gap-2 mr-8">
+                <MudButton Class="appber-button" OnClick="Home">Home</MudButton>
+                <MudButton Class="appber-button">Service</MudButton>
+                <MudButton Class="appber-button" OnClick="ViewDoctor">Appointment</MudButton>
+            </MudItem>
+            <MudMenu AnchorOrigin="Origin.BottomRight" Dense="true">
+                <ActivatorContent>
+                    <MudAvatar>
+                        <MudImage Src="Images/userlogout.png"></MudImage>
+                    </MudAvatar>
+                </ActivatorContent>
+                <ChildContent>
+                    <MudListItem Text="My Appointment" Icon="@Icons.Material.Filled.AssignmentInd" OnClick="MyAppointment" />
+                    <MudDivider Class="mb-2" />
+                    <MudListItem Text="Login" Icon="@Icons.Material.Filled.Login" OnClick="Login" />
+                </ChildContent>
+            </MudMenu>
+        </NotAuthorized>
+    </AuthorizeView>
 </MudAppBar>
 
 <style>
@@ -63,16 +75,13 @@
 
 @code {
     private bool isAuthorized { get; set; } = false;
+    private int amount { get; set; } = 0;
     private DialogOptions _dialogOption = new DialogOptions() { MaxWidth = MaxWidth.Medium, FullWidth = true, DisableBackdropClick = true, NoHeader = true, CloseButton = false };
 
-    private void AppBerClick()
+    protected override async Task OnInitializedAsync()
     {
-
-    }
-
-    private void click()
-    {
-
+        var userAmount = await _sessionStorage.GetItemAsync<int>("amount");
+        _currentUser.Recharge(userAmount);
     }
 
     private async Task Login()
@@ -86,11 +95,12 @@
                 var registermodel = result.Data as RegisterModel;
                 if (registermodel.FirstName != null)
                 {
-                    var response = await _httpService.Post<LoginResponse>("/api/auth/signup", registermodel);
+                    var response = await _httpService.Post<LoginResponse>("/api/Auth/signup", registermodel);
                     if (response != null)
                     {
                         var authValue = JsonSerializer.Serialize<LoginResponse>(response);
                         await ((AuthStateProvider)_authStateProvider).SetStateAsync(authValue);
+                        await ((AuthStateProvider)_authStateProvider).SetProfileAmountAync(response.TotalPurchases);
                     }
                 }
                 else
@@ -101,11 +111,12 @@
                             Password = registermodel.Password
                         };
 
-                    var response = await _httpService.Post<LoginResponse>("/api/auth/signin", registermodel);
+                    var response = await _httpService.Post<LoginResponse>("/api/auth/signin", logInModel);
                     if (response != null)
                     {
                         var authValue = JsonSerializer.Serialize<LoginResponse>(response);
                         await ((AuthStateProvider)_authStateProvider).SetStateAsync(authValue);
+                        await ((AuthStateProvider)_authStateProvider).SetProfileAmountAync(response.TotalPurchases);
                         isAuthorized = true;
 
                         if (response.UserRole == UserRoleType.Admin)
@@ -136,10 +147,24 @@
         _navigator.NavigateTo("myAppointment");
     }
 
-    private void Logout() => isAuthorized = !isAuthorized;
+    private async Task Logout()
+    {
+        await((AuthStateProvider)_authStateProvider).ClearStateAsync();
+        _navigator.NavigateTo("/");
+    }
 
     private void Home()
     {
         _navigator.NavigateTo("/");
+    }
+
+    private void Reacharge()
+    {
+        _navigator.NavigateTo("/user-payment");
+    }
+
+    private void ViewDoctor()
+    {
+        _navigator.NavigateTo("view-doctor");
     }
 }

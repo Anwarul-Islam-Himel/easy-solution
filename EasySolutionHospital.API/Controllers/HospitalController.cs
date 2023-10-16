@@ -78,5 +78,25 @@ namespace EasySolutionHospital.API.Controllers
             var response = await _hospitalService.GetDoctorById(id);
             return Ok(response);
         }
+
+        [HttpGet, Route("add-money/{id}/{userId}")]
+        public async Task<IActionResult> AddMoney(Guid id, string userId)
+        {
+            var response = await _hospitalService.AddMoneyInProfile(id, userId);
+            return Ok(response);
+        }
+
+        [HttpPost, Route("take-appointment")]
+        public async Task<IActionResult> TakeAppointMent(AppointmentModel model)
+        {
+            var response = await _hospitalService.TakeAppointmentAsync(model);
+            return Ok(response);
+        }
+
+        //[HttpGet, Route("pay-doctor-bill/{bookId}")]
+        //public async Task<IActionResult> PayBill(int bookId)
+        //{
+
+        //}
     }
 }

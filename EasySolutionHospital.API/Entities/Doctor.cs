@@ -14,6 +14,7 @@ namespace EasySolutionHospital.API.Entities
         public int? RoomNumber { get; set; }
         public int? FeeAmount { get; set; }
         public string? ImagePath { get; set; }
+        public int? TotalReceive { get; set; }
         public virtual ApplicationUser User { get; set; }
     }
 }

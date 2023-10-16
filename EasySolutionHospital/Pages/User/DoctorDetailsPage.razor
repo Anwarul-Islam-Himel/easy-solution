@@ -59,19 +59,70 @@
 
 
 @code {
+    [CascadingParameter]
+    protected Task<AuthenticationState> AuthState { get; set; }
     [Parameter]
     public int id { get; set; }
     public DoctorViewModel Doctor { get; set; } = new DoctorViewModel();
+    private bool isAuthorized { get; set; } = false;
+    private AppointmentModel CurrentUserInfo { get; set; } = new();
+
+    private DialogOptions _dialogOption = new DialogOptions() { MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true, CloseButton = false };
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
+            var user = (await AuthState).User;
+            if (user != null && user.Identity != null && user.Identity.IsAuthenticated)
+            {
+                isAuthorized = true;
+                CurrentUserInfo = await _httpService.Get<AppointmentModel>($"/api/Auth/currentUser/{_currentUser.UserId}");
+            }
             Doctor = await _httpService.Get<DoctorViewModel>($"/api/Hospital/doctor-details/{id}");
         }
         catch
         {
             Doctor = new();
+        }
+    }
+
+
+    private async Task OpenBookDialog()
+    {
+        var dilogData = new DialogParameters
+            {
+                ["Model"] = new AppointmentModel()
+            };
+
+        if (isAuthorized)
+        {
+            dilogData = new DialogParameters
+                {
+                    ["Model"] = new AppointmentModel()
+                    {
+                        Name = CurrentUserInfo.Name,
+                        Age = CurrentUserInfo.Age,
+                        Email = CurrentUserInfo.Email,
+                        Phone = CurrentUserInfo.Phone
+                    }
+                };
+        }
+        var dialog = _dialogService.Show<AppointmentBookingDialog>("Book Now", dilogData, _dialogOption);
+        var result = await dialog.Result;
+        if (!result.Canceled)
+        {
+            var model = result.Data as AppointmentModel;
+            model.DoctorId = id;
+            var response = await _httpService.Post<Unit>("/api/Hospital/take-appointment", model);
+            if (response.IsSuccess)
+            {
+                _snakBar.Add(response.Message, Severity.Success);
+            }
+            else
+            {
+                _snakBar.Add(response.Message, Severity.Error);
+            }
         }
     }
 }

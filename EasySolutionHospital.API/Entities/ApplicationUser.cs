@@ -9,6 +9,7 @@ namespace EasySolutionHospital.API.Entity
         public string LastName { get; set; }
         public string Address { get; set; }
         public DateTime DateOfBirth { get; set; }
+        public int? TotalPurchase { get; set; }
         public virtual Doctor Doctor { get; set; }
     }
 }

@@ -1,5 +1,107 @@
 ﻿@page "/admin"
 
-@code {
+<MudTable Items="PaymentCards" Loading="isLoading" T="PaymentCardViewModel" Dense="true" Class="mt-16 mx-4">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Payment Card</MudText>
+        <MudButton Class="ml-2" Color="Color.Primary" StartIcon="@Icons.Material.Filled.AddCircleOutline" OnClick="OpenAddCardDialog">Create Payment Card</MudButton>
+        <MudSpacer />
+    </ToolBarContent>
+    <ColGroup>
+        <col />
+        <col />
+        <col />
+        <col style="width:50px;" />
+    </ColGroup>
+    <HeaderContent>
+        <MudTd><MudTableSortLabel SortBy="new Func<PaymentCardViewModel, object>(x => x.Name)">Name</MudTableSortLabel></MudTd>
+        <MudTd><MudTableSortLabel SortBy="new Func<PaymentCardViewModel, object>(x => x.Price)">Price</MudTableSortLabel></MudTd>
+        <MudTd><MudTableSortLabel SortBy="new Func<PaymentCardViewModel, object>(x => x.IsUsed)">Status</MudTableSortLabel></MudTd>
+        <MudTd>Action</MudTd>
+    </HeaderContent>
+    <NoRecordsContent>
+        <MudText Typo="Typo.h5" Class="mud-text-secondary mt-16 mb-16">No Payment Card Available</MudText>
+    </NoRecordsContent>
+    <RowTemplate>
+        <MudTd>@context.Name</MudTd>
+        <MudTd>@context.Price</MudTd>
+        @if (context.IsUsed)
+        {
+            <MudTd><MudText Color="Color.Error">Used</MudText></MudTd>
+        }
+        else
+        {
+            <MudTd><MudText Color="Color.Tertiary">Active</MudText></MudTd>
+        }
 
+        <MudTd>
+            <MudMenu Icon="@Icons.Material.Filled.MoreVert">
+                <MudMenuItem Icon="@Icons.Material.Filled.Edit" OnClick="()=>Edit(context)">Edit</MudMenuItem>
+                <MudMenuItem Icon="@Icons.Material.Filled.Delete" OnClick="()=>Delete(context)">Delete</MudMenuItem>
+            </MudMenu>
+        </MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager RowsPerPageString="Rows Per Page" />
+    </PagerContent>
+</MudTable>
+
+@code {
+    public List<PaymentCardViewModel> PaymentCards { get; set; } = new();
+
+    private bool isLoading { get; set; } = false;
+    private DialogOptions _dialogOption = new DialogOptions() { MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true, CloseButton = true };
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            PaymentCards = await _httpService.Get<List<PaymentCardViewModel>>("/api/Admin/payment-card");
+        }
+        catch
+        {
+            PaymentCards = new List<PaymentCardViewModel>();
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private async Task OpenAddCardDialog()
+    {
+        try
+        {
+            var dialog = _dialogService.Show<CreatePaymentCardDialog>("New payment card", _dialogOption);
+            var result = await dialog.Result;
+            if (!result.Canceled)
+            {
+                var model = result.Data as PaymentCardViewModel;
+                var response = await _httpService.Post<Unit>("/api/Admin/payment-card", model);
+                if (response.IsSuccess)
+                {
+                    model.Id = new Guid(response.ResponseId);
+                    PaymentCards.Add(model);
+                    _snakBar.Add("Successfully addded payment card!", Severity.Success);
+                }
+                else
+                {
+                    _snakBar.Add(response.Message, Severity.Error);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _snakBar.Add(ex.Message, Severity.Error);
+        }
+    }
+
+    private async Task Delete(PaymentCardViewModel model)
+    {
+        
+    }
+
+    private async Task Edit(PaymentCardViewModel model)
+    {
+
+    }
 }

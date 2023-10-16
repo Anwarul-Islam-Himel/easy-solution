@@ -1,42 +1,77 @@
 ﻿@page "/myAppointment"
 
-<AuthorizeView Roles="@(UserRoleType.User.ToString())">
-    <Authorized>
-        <MudItem Class="d-flex flex-column">
-            <MudItem Class="d-flex justify-center">
-                <MudText Typo="Typo.h6">@_currentUser.FullName</MudText>
+<MudItem Class="mt-4">
+    <AuthorizeView Roles="@(UserRoleType.User.ToString())">
+        <Authorized>
+            <MudItem Class="d-flex flex-column">
+                <MudItem Class="d-flex justify-center">
+                    <MudText Typo="Typo.h6">@_currentUser.FullName</MudText>
+                </MudItem>
+                <MudItem Class="d-flex justify-center">
+                    <MudText>@currentDate</MudText>
+                </MudItem>
             </MudItem>
-            <MudItem Class="d-flex justify-center">
-                <MudText>@currentDate</MudText>
+        </Authorized>
+        <NotAuthorized>
+            <MudItem Class="d-flex flex-column">
+                <MudItem Class="d-flex justify-center">
+                    <MudText Typo="Typo.body2">You are not login yet, please login to see your appointment or search by your email</MudText>
+                </MudItem>
+                <MudItem Class="d-flex justify-center">
+                    <MudText>@currentDate</MudText>
+                </MudItem>
             </MudItem>
+            <MudItem Class="d-flex justify-center gap-3">
+                <MudItem Style="width: 400px;">
+                    <MudTextField @bind-Value="_searchAppointment" Placeholder="Search" Adornment="Adornment.Start" Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-3" MaxLength="40"></MudTextField>
+                </MudItem>
+                <MudItem Class="mt-3">
+                    <MudIconButton Color="Color.Tertiary" Size="Size.Small" Icon="@Icons.Material.Filled.Search" Variant="Variant.Filled" Style="height: 54px;" />
+                </MudItem>
+            </MudItem>
+        </NotAuthorized>
+    </AuthorizeView>
+</MudItem>
+<MudItem Class="d-flex justify-center mt-4 pa-4">
+    <MudPaper Elevation="20" Class="pa-6">
+        <MudText Typo="Typo.h4">Appointment</MudText>
+        <MudItem Class="pa-4 d-flex flex-column">
+            @foreach (var appointment in Appointments)
+            {
+                <UserAppointmentCard Model="@appointment" />
+            }
         </MudItem>
-    </Authorized>
-    <NotAuthorized>
-        <MudItem Class="d-flex flex-column">
-            <MudItem Class="d-flex justify-center">
-                <MudText Typo="Typo.body2">You are not login yet, please login to see your appointment or search by your email</MudText>
-            </MudItem>
-            <MudItem Class="d-flex justify-center">
-                <MudText>@currentDate</MudText>
-            </MudItem>
+    </MudPaper>
+    <MudPaper Elevation="20" Class="mt-4 pa-6">
+        <MudText Typo="Typo.h4">Booking</MudText>
+        <MudItem Class="pa-4">
+            @foreach (var book in Bookings)
+            {
+                <UserAppointmentCard Model="@book" />
+            }
         </MudItem>
-        <MudItem Class="d-flex justify-center">
-            <MudTextField @bind-Value="_searchAppointment" Placeholder="Search" Adornment="Adornment.Start" Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-3" MaxLength="40"></MudTextField>
-            <MudIconButton Color="Color.Tertiary" Icon="@Icons.Material.Filled.Search" Variant="Variant.Filled"></MudIconButton>
-        </MudItem>
-    </NotAuthorized>
-</AuthorizeView>
+    </MudPaper>
+
+</MudItem>
 
 
 
 @code {
     public List<AppointmentModel> Appointments { get; set; } = new();
+    public List<AppointmentModel> Bookings { get; set; } = new();
     public DateTime currentDate { get; set; } = DateTime.Now;
     public string _searchAppointment { get; set; } = string.Empty;
 
-    protected override Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
-        return base.OnInitializedAsync();
+        try
+        {
+            Appointments = await _httpService.Get<List<AppointmentModel>>($"/api/Hospital/my-appointment/{_currentUser.UserId}");
+        }
+        catch
+        {
+            Appointments = new List<AppointmentModel>();
+        }
     }
 
     private async Task SearchMyAppointment()

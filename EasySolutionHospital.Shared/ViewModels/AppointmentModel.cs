@@ -23,6 +23,7 @@ namespace EasySolutionHospital.Models
         public string? HealthPackageName { get; set; }
         public int? PriceForMale { get; set; }
         public int? PriceForFemale { get; set; }
+        public bool IsPay { get; set; } = false;
 
     }
 }

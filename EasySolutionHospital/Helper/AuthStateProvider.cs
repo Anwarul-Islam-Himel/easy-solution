@@ -27,7 +27,8 @@ namespace EasySolutionHospital.Helper
                     {
                             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                             new Claim(ClaimTypes.Name, user.UserName),
-                            new Claim(ClaimTypes.Role, user.UserRole.ToString())
+                            new Claim(ClaimTypes.Role, user.UserRole.ToString()),
+                            new Claim(ClaimTypes.SerialNumber, user.TotalPurchases.ToString())
                         }, "Authentication");
 
                 }
@@ -59,6 +60,11 @@ namespace EasySolutionHospital.Helper
             var state = new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
 
             NotifyAuthenticationStateChanged(Task.FromResult(state));
+        }
+
+        public async Task SetProfileAmountAync(int? amount = 0)
+        {
+            await _sessionStorage.SetItemAsync("amount", amount);
         }
     }
 }

@@ -1,9 +1,11 @@
-﻿using EasySolutionHospital.API.Entity;
+﻿using EasySolutionHospital.API.Entities;
+using EasySolutionHospital.API.Entity;
 using EasySolutionHospital.API.Infrastructures;
 using EasySolutionHospital.Shared.Enum;
 using EasySolutionHospital.Shared.ResponseModel;
 using EasySolutionHospital.Shared.ViewModels;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace EasySolutionHospital.API.Services
 {
@@ -12,15 +14,19 @@ namespace EasySolutionHospital.API.Services
         Task<Unit> AddAdministrator(AdministratorsViewModel model);
         Task<Unit> EditAdministrator(AdministratorsViewModel model, string id);
         Task<Unit> DeleteAdministrator(string id);
+        Task<Unit> CreatePaymentCard(PaymentCardViewModel model);
         Task<List<AdministratorsViewModel>> GetAllAdministrators();
+        Task<List<PaymentCardViewModel>> GetAllPaymentCards();
     }
     public class AdminService : IAdminService
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly AppDbContext _context;
 
-        public AdminService(UserManager<ApplicationUser> userManager)
+        public AdminService(UserManager<ApplicationUser> userManager, AppDbContext context)
         {
             _userManager = userManager;
+            _context = context;
         }
 
         public async  Task<Unit> AddAdministrator(AdministratorsViewModel model)
@@ -95,6 +101,57 @@ namespace EasySolutionHospital.API.Services
             catch (Exception ex)
             {
                 return new List<AdministratorsViewModel>();
+            }
+        }
+
+        public async Task<Unit> CreatePaymentCard(PaymentCardViewModel model)
+        {
+            try
+            {
+                var newCard = new PaymentCard
+                {
+                    IsUsed = false,
+                    Name = model.Name,
+                    Price = model.Price,
+                };
+
+                await _context.PaymentCards.AddAsync(newCard);
+                await _context.SaveChangesAsync();
+
+                return new()
+                {
+                    IsSuccess = true,
+                    ResponseId = newCard.Id.ToString(),
+                    Message = "Successfully create payment card"
+                };
+            }
+            catch(Exception ex)
+            {
+                return new()
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
+            }
+        }
+
+        public async Task<List<PaymentCardViewModel>> GetAllPaymentCards()
+        {
+            try
+            {
+                var cards = await _context.PaymentCards.ToListAsync();
+
+                return cards.Select(x => new PaymentCardViewModel
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Price = x.Price,
+                    IsUsed = x.IsUsed
+                }).ToList();
+            }
+            catch(Exception ex)
+            {
+                return new List<PaymentCardViewModel>();
             }
         }
     }

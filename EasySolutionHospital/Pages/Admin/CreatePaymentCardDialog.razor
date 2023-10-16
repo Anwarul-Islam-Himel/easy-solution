@@ -1,0 +1,25 @@
+﻿<MudDialog>
+    <DialogContent>
+        <EditForm Model="@Model" OnValidSubmit="Submit">
+            <DataAnnotationsValidator />
+            <MudTextField @bind-Value="Model.Name" Label="Name" For="(() => Model.Name)" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+            <MudNumericField @bind-Value="Model.Price" Class="mt-3" Label="Price" For="(() => Model.Price)" Variant="Variant.Outlined" Margin="Margin.Dense"></MudNumericField>
+            <div class="mt-4 d-flex gap-2 justify-end">
+                <MudButton Class="form-cancel-btn" Color="Color.Primary" Variant="Variant.Outlined" OnClick="Cancel">Cancel</MudButton>
+                <MudButton Class="form-submit-btn" Color="Color.Primary" Variant="Variant.Filled" ButtonType="ButtonType.Submit">Save</MudButton>
+            </div>
+        </EditForm>
+    </DialogContent>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public PaymentCardViewModel Model { get; set; } = new();
+
+    void Submit() => MudDialog.Close(DialogResult.Ok(Model));
+
+    void Cancel() => MudDialog.Cancel();
+}

@@ -1,0 +1,67 @@
+﻿@page "/user-payment"
+
+<MudItem Class="d-flex flex-column">
+    <MudItem Class="d-flex justify-center">
+        <h3>Payment</h3>
+    </MudItem>
+    <MudItem Class="d-flex justify-center mt-4">
+        <MudItem Style="width: 400px;">
+            <MudTextField @bind-Value="paymentCardId" Label="Enter Card Id" Margin="Margin.Dense" Variant="Variant.Outlined"></MudTextField>
+        </MudItem>
+    </MudItem>
+    <MudItem Class="d-flex justify-center mt-4">
+        <MudButton Color="Color.Tertiary" Variant="Variant.Filled" Disabled="paymentCardId == null" OnClick="RechargeProfile"><MudText>Payment</MudText></MudButton>
+    </MudItem>
+</MudItem>
+<MudItem Class="d-flex justify-center mt-4 mb-5">
+    <MudItem Class="d-flex flex-wrap gap-4 justify-center" Style="width: 90%;">
+        @foreach (var payment in Payments)
+        {
+            <MudItem>
+                <RechargePaymentCard Card="@payment" />
+            </MudItem>
+        }
+    </MudItem>
+</MudItem>
+
+@code {
+    public List<PaymentCardViewModel> Payments { get; set; } = new();
+    private Guid? paymentCardId { get; set; } = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var _payments = await _httpService.Get<List<PaymentCardViewModel>>("/api/Admin/payment-card");
+            Payments = _payments.Where(x => x.IsUsed == false).ToList();
+        }
+        catch
+        {
+            Payments = new List<PaymentCardViewModel>();
+        }
+    }
+
+    private async Task RechargeProfile()
+    {
+        try
+        {
+            var response = await _httpService.Get<Unit>($"/api/Hospital/add-money/{paymentCardId}/{_currentUser.UserId}");
+            if (response.IsSuccess)
+            {
+                _currentUser.Recharge(response.Amount);
+                await ((AuthStateProvider)_authStateProvider).SetProfileAmountAync(response.Amount);
+                _snakBar.Add("Successfully recharge!", Severity.Success);
+            }
+            else
+            {
+                _snakBar.Add(response.Message, Severity.Error);
+            }
+        }
+        catch
+        {
+            _snakBar.Add("Token isn't valid", Severity.Error);
+        }
+
+    }
+
+}

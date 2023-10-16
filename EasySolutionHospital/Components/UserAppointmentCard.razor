@@ -4,7 +4,7 @@
             <MudText Typo="Typo.body2">@Model.Name</MudText>
             <MudText Typo="Typo.body2">@Model.Email</MudText>
         </MudItem>
-        <MudItem xs="7">
+        <MudItem xs="6">
             @if (string.IsNullOrEmpty(Model.DoctorName))
             {
                 <MudText Color="Color.Primary" Typo="Typo.body1">@Model.HealthPackageName</MudText>
@@ -17,10 +17,25 @@
         <MudItem xs="2">
             <MudText Typo="Typo.body2">@Model.AppointDate.ToString("dd/MM/yyyy")</MudText>
         </MudItem>
+        <MudItem xs="1">
+            @if (Model.IsPay)
+            {
+                <MudButton Variant="Variant.Outlined" Color="Color.Success" OnClick="Pay" Size="Size.Small"><MudText>Pay</MudText></MudButton>
+            }
+            else
+            {
+                <MudButton Variant="Variant.Outlined" Color="Color.Success" Disabled Size="Size.Small"><MudText>Paid</MudText></MudButton>
+            }
+        </MudItem>
     </MudGrid>
 </MudPaper>
 
 @code {
     [Parameter]
     public AppointmentModel Model { get; set; } = new();
+
+    private async Task Pay()
+    {
+        
+    }
 }

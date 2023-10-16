@@ -12,7 +12,8 @@ namespace EasySolutionHospital.API.Entity
         public string Phone { get; set; }
         public Gender Gender { get; set; }
         public DateTime AppointTime { get; set; }
-        public int DoctorId { get; set; }
-        public int PackageId { get; set;}
+        public int? DoctorId { get; set; }
+        public int? PackageId { get; set;}
+        public bool? IsPay { get; set; }
     }
 }

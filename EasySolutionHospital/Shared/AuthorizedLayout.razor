@@ -1,35 +1,44 @@
-﻿<MudLayout>
-    <MudAppBar Color="Color.Transparent" Class="d-flex" Elevation="1">
-        <AuthorizeView >
+﻿@if (!IsLoading)
+{
+    <MudLayout>
+        <AuthorizeView Roles="@(UserRoleType.User.ToString())">
             <Authorized>
-                <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+                <AppBar />
             </Authorized>
+            <NotAuthorized>
+                <MudAppBar Color="Color.Transparent" Class="d-flex mb-16" Elevation="1">
+                    <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+                    <MudImage Style="width: 70px;" Src="Images/logo.png"></MudImage>
+                    <MudSpacer />
+                    <MudMenu AnchorOrigin="Origin.BottomRight" Dense="true">
+                        <ActivatorContent>
+                            <MudAvatar>
+                                <MudImage Src="Images/userlogin.png"></MudImage>
+                            </MudAvatar>
+                        </ActivatorContent>
+                        <ChildContent>
+                            <UserCard FullName="@_currentUser.FullName" />
+                            <MudDivider Class="mb-2" />
+                            <MudListItem Text="Logout" Icon="@Icons.Material.Filled.Logout" OnClick="Logout" />
+                        </ChildContent>
+                    </MudMenu>
+                </MudAppBar>
+                <MudDrawer @bind-Open="@_drawerOpen">
+                    <NavMenu />
+                </MudDrawer>
+            </NotAuthorized>
         </AuthorizeView>
-        <MudImage Style="width: 70px;" Src="Images/logo.png"></MudImage>
-        <MudSpacer />
-        <MudMenu AnchorOrigin="Origin.BottomRight" Dense="true">
-            <ActivatorContent>
-                <MudAvatar>
-                    <MudImage Src="Images/userlogin.png"></MudImage>
-                </MudAvatar>
-            </ActivatorContent>
-            <ChildContent>
-                <UserCard FullName="@_currentUser.FullName" />
-                <MudDivider Class="mb-2" />
-                <MudListItem Text="Logout" Icon="@Icons.Material.Filled.Logout" OnClick="Logout" />
-            </ChildContent>
-        </MudMenu>
-    </MudAppBar>
-    <MudDrawer @bind-Open="@_drawerOpen">
-        <NavMenu />
-    </MudDrawer>
-    <MudMainContent Class="px-4 mt-4">
-        @if (!IsLoading)
-        {
+        <MudMainContent>
             @ChildContent
-        }
-    </MudMainContent>
-</MudLayout>
+        </MudMainContent>
+    </MudLayout>
+}
+
+<style>
+    .mud-main-content {
+        padding-top: 0px !important;
+    }
+</style>
 
 @code {
     [Parameter]
@@ -47,7 +56,9 @@
 
             var fullName = user.GetFullName();
             var userId = user.GetUserId();
-            _currentUser.SetState(fullName, userId);
+            var userAmount = user.GetUserAmount();
+            var userRole = user.GetUserRole();
+            _currentUser.SetState(fullName, userId, userAmount, userRole);
         }
         catch
         {
@@ -68,5 +79,10 @@
     {
         await ((AuthStateProvider)_authStateProvider).ClearStateAsync();
         _navigator.NavigateTo("/");
+    }
+
+    private void MyAppointment()
+    {
+        _navigator.NavigateTo("myAppointment");
     }
 }

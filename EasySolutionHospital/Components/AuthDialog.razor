@@ -23,7 +23,7 @@
                                         <MudTextField @bind-Value="RegisterModel.Phone" Label="Phone Number" For="(() => RegisterModel.Phone)" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
                                     </MudItem>
                                     <MudItem xs="5">
-                                        <MudDatePicker Date="RegisterModel.DateOfBirth" Label="Date of Birth" Placeholder="Select Date" Variant="Variant.Outlined" Margin="Margin.Dense"></MudDatePicker>
+                                        <MudDatePicker @bind-Date="RegisterModel.DateOfBirth" Label="Date of Birth" Placeholder="Select Date" Variant="Variant.Outlined" Margin="Margin.Dense"></MudDatePicker>
                                     </MudItem>
                                     <MudItem xs="12">
                                         <MudTextField @bind-Value="RegisterModel.Email" Label="Email" For="(() => RegisterModel.Email)" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>

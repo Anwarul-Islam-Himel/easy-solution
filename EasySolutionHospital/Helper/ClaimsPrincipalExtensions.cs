@@ -12,6 +12,9 @@ namespace EasySolutionHospital.Helper
 
         public static string GetUserId(this ClaimsPrincipal claimsPrincipal) =>
           claimsPrincipal.FindFirstValue<string>(ClaimTypes.NameIdentifier);
+
+        public static string GetUserAmount(this ClaimsPrincipal claimsPrincipal) =>
+        claimsPrincipal.FindFirstValue<string>(ClaimTypes.SerialNumber);
     }
 
     public static class PrincipalExtensions

@@ -5,5 +5,6 @@
         public string Message { get; set; }
         public bool IsSuccess { get; set; }
         public string ResponseId { get; set; }
+        public int? Amount { get; set; }
     }
 }

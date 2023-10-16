@@ -21,6 +21,8 @@ namespace EasySolutionHospital.API.Services
         Task<List<AppointmentModel>> GetMyAppointmentByEmail(string email);
         Task<List<DoctorViewModel>> GetApprovedDoctor();
         Task<DoctorViewModel> GetDoctorById(int id);
+        Task<Unit> AddMoneyInProfile(Guid id, string userId);
+        Task<Unit> TakeAppointmentAsync(AppointmentModel model);
     }
     public class HospitalService : IHospitalService
     {
@@ -188,7 +190,7 @@ namespace EasySolutionHospital.API.Services
                 {
                     if (appointment.DoctorId != 0)
                     {
-                        doctorId.Add(appointment.DoctorId);
+                        doctorId.Add(appointment.DoctorId.Value);
                     }
                 }
                 var doctors = await _context.Doctors.Where(x => doctorId.Contains(x.Id))
@@ -282,6 +284,82 @@ namespace EasySolutionHospital.API.Services
             catch
             {
                 return null;
+            }
+        }
+
+        public async Task<Unit> AddMoneyInProfile(Guid id, string userId)
+        {
+            try
+            {
+                var card = await _context.PaymentCards.FindAsync(id);
+                if (card != null && !card.IsUsed)
+                {
+                    var user = await _userManager.FindByIdAsync(userId);
+
+                    card.IsUsed = true;
+                    user.TotalPurchase = user.TotalPurchase  != null ? user.TotalPurchase + card.Price : card.Price;
+                    
+                    _context.PaymentCards.Update(card);
+                    await _context.SaveChangesAsync();
+
+                    await _userManager.UpdateAsync(user);
+                    await _context.SaveChangesAsync();
+
+                    return new()
+                    {
+                        IsSuccess = true,
+                        Message = "Successfully add money !!",
+                        Amount = user.TotalPurchase
+                    };
+                }
+
+
+                return new()
+                {
+                    IsSuccess = false,
+                    Message = "Card is not valid !!"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new()
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
+            }
+        }
+
+        public async Task<Unit> TakeAppointmentAsync(AppointmentModel model)
+        {
+            try
+            {
+                var newBooking = new Booking
+                {
+                    Name = model.Name,
+                    Email = model.Email,
+                    Description = model.Description,
+                    Age = model.Age.Value,
+                    Phone = model.Phone,
+                    Gender = model.Gender,
+                    AppointTime = model.AppointDate,
+                    DoctorId = model.DoctorId
+                };
+                await _context.Bookings.AddAsync(newBooking);
+                await _context.SaveChangesAsync();
+                return new()
+                {
+                    IsSuccess = true,
+                    Message = "Appointment taken successfully!"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new()
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
             }
         }
     }

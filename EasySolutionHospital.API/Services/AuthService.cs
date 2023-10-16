@@ -50,7 +50,8 @@ namespace EasySolutionHospital.API.Services
                 {
                     Id = user.Id,
                     UserName = model.FirstName + " " + model.LastName,
-                    UserRole = UserRoleType.User
+                    UserRole = UserRoleType.User,
+                    TotalPurchases = user.TotalPurchase
                 };
 
             }
@@ -83,7 +84,8 @@ namespace EasySolutionHospital.API.Services
                     {
                         Id = user.Id,
                         UserName = user.FirstName + " " + user.LastName,
-                        UserRole = Enum.Parse<UserRoleType>(useRole.FirstOrDefault())
+                        UserRole = Enum.Parse<UserRoleType>(useRole.FirstOrDefault()),
+                        TotalPurchases = user.TotalPurchase
                     };
                 }
                 return null;

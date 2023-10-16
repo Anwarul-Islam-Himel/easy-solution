@@ -20,6 +20,7 @@ namespace EasySolutionHospital.API.Infrastructures
             builder.ApplyConfiguration(new DoctorConfiguration());
             builder.ApplyConfiguration(new UserConfiguration());
             builder.ApplyConfiguration(new BloodDonationConfiguration());
+            builder.ApplyConfiguration(new PaymentCardConfiguration());
             base.OnModelCreating(builder);
         }
 
@@ -29,5 +30,6 @@ namespace EasySolutionHospital.API.Infrastructures
         public DbSet<Booking> Bookings { get; set; }
         public DbSet<Doctor> Doctors { get; set; }
         public DbSet<BloodDonation> BloodDonations { get; set; }
+        public DbSet<PaymentCard> PaymentCards { get; set; }
     }
 }

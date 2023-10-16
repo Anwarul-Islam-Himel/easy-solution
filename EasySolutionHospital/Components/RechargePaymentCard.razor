@@ -1,0 +1,48 @@
+﻿<MudCard Class="card-bg">
+    <MudItem Class="d-flex gap-4">
+        <MudImage Src="Card/logo.png" Style="width: 55px;"></MudImage>
+        <MudText Style="font-size : 20px; font-weight: 600; color : white">@Card.Name Card</MudText>
+    </MudItem>
+    <MudItem Class="mt-4 d-flex justify-end">
+        <MudImage Src="Card/chip.png" Style="width: 55px;"></MudImage>
+    </MudItem>
+    <MudItem Class="d-flex justify-center mt-4">
+        <MudText Style="font-size: 14px; font-weight: 500; color : white">@Card.Id</MudText>
+    </MudItem>
+    <MudItem Class="d-flex justify-center mt-4">
+        @if (Card.Price < 300)
+        {
+            <MudText Style="font-size: 18px; font-weight: 500; color : #FFA07A">@Card.Price</MudText>
+        }
+        else if(Card.Price < 600)
+        {
+            <MudText Style="font-size: 18px; font-weight: 500; color : #8B0000">@Card.Price</MudText>
+        }
+        else
+        {
+            <MudText Style="font-size: 18px; font-weight: 500; color : #FF0000">@Card.Price</MudText>
+        }
+
+    </MudItem>
+</MudCard>
+
+<style>
+    .card-bg{
+        background-color: #e3f2fd;;
+        width: 100%;
+        height: 100%;
+        background-image: url(../Card/bg.png);
+        background-size: 100% 100%;
+        border-radius: 28px;
+        max-width: 380px;
+        width: 100%;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        background-size: cover;
+        padding: 25px;
+    }
+</style>
+
+@code {
+    [Parameter]
+    public PaymentCardViewModel Card { get; set; } = new();
+}

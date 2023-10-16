@@ -7,5 +7,6 @@ namespace EasySolutionHospital.Shared.ResponseModel
         public string Id { get; set; }
         public string UserName { get; set; }
         public UserRoleType UserRole { get; set; }
+        public int? TotalPurchases { get; set; }
     }
 }

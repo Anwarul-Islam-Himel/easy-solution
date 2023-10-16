@@ -1,4 +1,5 @@
-﻿using EasySolutionHospital.API.Services;
+﻿using EasySolutionHospital.API.Entities;
+using EasySolutionHospital.API.Services;
 using EasySolutionHospital.Shared.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -39,6 +40,20 @@ namespace EasySolutionHospital.API.Controllers
         public async Task<IActionResult> DeleteAdministrator( string id)
         {
             var response = await _adminService.DeleteAdministrator(id);
+            return Ok(response);
+        }
+
+        [HttpPost, Route("payment-card")]
+        public async Task<IActionResult> AddCard(PaymentCardViewModel model)
+        {
+            var response = await _adminService.CreatePaymentCard(model);
+            return Ok(response);
+        }
+
+        [HttpGet, Route("payment-card")]
+        public async Task<IActionResult> GetCards()
+        {
+            var response = await _adminService.GetAllPaymentCards();
             return Ok(response);
         }
     }
