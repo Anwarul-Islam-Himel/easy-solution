@@ -93,10 +93,11 @@ namespace EasySolutionHospital.API.Controllers
             return Ok(response);
         }
 
-        //[HttpGet, Route("pay-doctor-bill/{bookId}")]
-        //public async Task<IActionResult> PayBill(int bookId)
-        //{
-
-        //}
+        [HttpGet, Route("pay-bill/{bookId}/{userId}")]
+        public async Task<IActionResult> PayBill(int bookId, string userId)
+        {
+            var response = await _hospitalService.PayBillAsync(bookId, userId);
+            return Ok(response);
+        }
     }
 }

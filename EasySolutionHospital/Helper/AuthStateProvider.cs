@@ -56,6 +56,7 @@ namespace EasySolutionHospital.Helper
         public async Task ClearStateAsync()
         {
             await _sessionStorage.RemoveItemAsync("auth");
+            await _sessionStorage.RemoveItemAsync("amount");
 
             var state = new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
 

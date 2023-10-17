@@ -1,0 +1,18 @@
+﻿
+<MudPaper Elevation="20" Class="pa-4 bg">
+    <MudItem Class="d-flex gap-3">
+        <MudIcon Color="Color.Primary" Icon="@Icons.Material.Filled.HealthAndSafety"/>
+        <MudText>@ServiceName</MudText>
+    </MudItem>
+</MudPaper>
+
+<style>
+    .bg{
+        background-color: #e1fbff !important;
+    }
+</style>
+
+@code {
+    [Parameter]
+    public string ServiceName{ get; set; }
+}

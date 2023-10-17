@@ -6,6 +6,7 @@ using EasySolutionHospital.Shared.ResponseModel;
 using EasySolutionHospital.Shared.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace EasySolutionHospital.API.Services
 {
@@ -15,6 +16,7 @@ namespace EasySolutionHospital.API.Services
         Task<Unit> EditAdministrator(AdministratorsViewModel model, string id);
         Task<Unit> DeleteAdministrator(string id);
         Task<Unit> CreatePaymentCard(PaymentCardViewModel model);
+        Task<Unit> DeletePaymentCard(Guid id);
         Task<List<AdministratorsViewModel>> GetAllAdministrators();
         Task<List<PaymentCardViewModel>> GetAllPaymentCards();
     }
@@ -152,6 +154,39 @@ namespace EasySolutionHospital.API.Services
             catch(Exception ex)
             {
                 return new List<PaymentCardViewModel>();
+            }
+        }
+
+        public async Task<Unit> DeletePaymentCard(Guid id)
+        {
+            try
+            {
+                var paymentcard = await _context.PaymentCards.FindAsync(id);
+                if(paymentcard != null)
+                {
+                    _context.PaymentCards.Remove(paymentcard);
+                    await _context.SaveChangesAsync();
+
+                    return new()
+                    {
+                        IsSuccess = true,
+                        Message = "Successfully remove payment card !!"
+                    };
+                }
+
+                return new()
+                {
+                    IsSuccess = false,
+                    Message = "Card isn't available!"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new()
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
             }
         }
     }

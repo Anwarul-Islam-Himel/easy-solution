@@ -56,5 +56,12 @@ namespace EasySolutionHospital.API.Controllers
             var response = await _adminService.GetAllPaymentCards();
             return Ok(response);
         }
+
+        [HttpGet, Route("payment-card/{id}")]
+        public async Task<IActionResult> Remove(Guid id)
+        {
+            var response = await _adminService.DeletePaymentCard(id);
+            return Ok(response);
+        }
     }
 }

@@ -16,6 +16,7 @@ namespace EasySolutionHospital.API.Infrastructures
             services.AddTransient<IHospitalService, HospitalService>();
             services.AddTransient<IAdministratorService, AdministratorService>();
             services.AddTransient<IAdminService, AdminService>();
+            services.AddTransient<IDoctorService, DoctorService>();
             services.AddAutoMapper(typeof(MapperProfile));
 
             services.AddIdentity<ApplicationUser, IdentityRole>(options => {

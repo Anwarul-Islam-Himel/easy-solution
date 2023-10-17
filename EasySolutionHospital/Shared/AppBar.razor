@@ -75,7 +75,6 @@
 
 @code {
     private bool isAuthorized { get; set; } = false;
-    private int amount { get; set; } = 0;
     private DialogOptions _dialogOption = new DialogOptions() { MaxWidth = MaxWidth.Medium, FullWidth = true, DisableBackdropClick = true, NoHeader = true, CloseButton = false };
 
     protected override async Task OnInitializedAsync()
@@ -118,6 +117,7 @@
                         await ((AuthStateProvider)_authStateProvider).SetStateAsync(authValue);
                         await ((AuthStateProvider)_authStateProvider).SetProfileAmountAync(response.TotalPurchases);
                         isAuthorized = true;
+                        _currentUser.Recharge(response.TotalPurchases);
 
                         if (response.UserRole == UserRoleType.Admin)
                         {

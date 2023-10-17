@@ -9,4 +9,13 @@
             <EasySolutionHospital.Pages.Administrator.AdministratorNavMenu />
         </Authorized>
     </AuthorizeView>
+    <AuthorizeView Roles="@(UserRoleType.Doctor.ToString())">
+        <Authorized>
+            <EasySolutionHospital.Pages.Doctor.DoctorNavMenu />
+        </Authorized>
+    </AuthorizeView>
+    <MudSpacer />
+    <MudItem Class="d-flex justify-center align-end" Style="height: 70vh;">
+        <MudImage Style="width: 70px;" Src="Images/logo.png"></MudImage>
+    </MudItem>
 </MudItem>

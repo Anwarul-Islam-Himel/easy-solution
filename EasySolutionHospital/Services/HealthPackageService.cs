@@ -1,4 +1,5 @@
 ﻿using EasySolutionHospital.Models;
+using EasySolutionHospital.Shared.ViewModels;
 
 namespace EasySolutionHospital.Services
 {
@@ -6,6 +7,8 @@ namespace EasySolutionHospital.Services
     public interface IHealthPackageService
     {
         Task<List<HealthPackageVM>> GetAllPackage();
+        Task<List<ServiceViewModel>> GetSuperSpecialityServices();
+        Task<List<ServiceViewModel>> GetBroadSpecialityServices();
     }
     public class HealthPackageService : IHealthPackageService
     {
@@ -72,6 +75,136 @@ namespace EasySolutionHospital.Services
                     PriceForMale = 1200,
                     ImagePath = "Images/basic.jpg",
                     Parameters = 10
+                }
+            });
+        }
+
+        public Task<List<ServiceViewModel>> GetSuperSpecialityServices()
+        {
+            return Task.FromResult(new List<ServiceViewModel>()
+            {
+                new()
+                {
+                    Name = "Cardiology"
+                },
+                new()
+                {
+                    Name = "Cardiovascular Thoracic Surgery"
+                },
+                new()
+                {
+                    Name = "Endocrinology"
+                },
+                new()
+                {
+                    Name = "Gastroentrology"
+                },
+                new()
+                {
+                    Name = "Nephrology"
+                },
+                new()
+                {
+                    Name = "Neurology"
+                },
+                 new()
+                {
+                    Name = "Neurosurgery"
+                },
+                new()
+                {
+                    Name = "Paediatric Surgery"
+                },
+                new()
+                {
+                    Name = "Plastic Surgery"
+                },
+                new()
+                {
+                    Name = "Pulmonary Medicine"
+                },
+                new()
+                {
+                    Name = "Rheumatology"
+                },
+                new()
+                {
+                    Name = "Urology"
+                },
+                new()
+                {
+                    Name = "Medical Oncology"
+                },
+                new()
+                {
+                    Name = "Surgical Oncology"
+                },
+                new()
+                {
+                    Name = "Haemato-Oncology"
+                },
+                new()
+                {
+                    Name = "Paediatric-Oncology"
+                },
+                new()
+                {
+                    Name = "Radiation Oncology"
+                }
+            });
+        }
+
+        public Task<List<ServiceViewModel>> GetBroadSpecialityServices()
+        {
+            return Task.FromResult(new List<ServiceViewModel>()
+            {
+                new()
+                {
+                    Name = "Critical Care Medicine"
+                },
+                new()
+                {
+                    Name = "Dermatology"
+                },
+                new()
+                {
+                    Name = "Diabetology"
+                },
+                new()
+                {
+                    Name = "ENT & Laryngology"
+                },
+                new()
+                {
+                    Name = "General Medicine & Infectious"
+                },
+                new()
+                {
+                    Name = "General Surgery"
+                },
+                 new()
+                {
+                    Name = "Gynaecology & Obstetrics"
+                },
+                new()
+                {
+                    Name = "Ophthamalogy"
+                },
+                new()
+                {
+                    Name = "Orthopaedics"
+                },
+                new()
+                {
+                    Name = "Paediatrics"
+                },
+                new()
+                {
+                    Name = "Pyschiatry"
+                },
+                new()
+                {
+                    Name = "Spine Surgery"
                 }
             });
         }

@@ -8,7 +8,7 @@
                     <MudText Typo="Typo.h6">@_currentUser.FullName</MudText>
                 </MudItem>
                 <MudItem Class="d-flex justify-center">
-                    <MudText>@currentDate</MudText>
+                    <MudText>@currentDate.ToString("dd/MM/yyyy")</MudText>
                 </MudItem>
             </MudItem>
         </Authorized>
@@ -18,7 +18,7 @@
                     <MudText Typo="Typo.body2">You are not login yet, please login to see your appointment or search by your email</MudText>
                 </MudItem>
                 <MudItem Class="d-flex justify-center">
-                    <MudText>@currentDate</MudText>
+                    <MudText>@currentDate.ToString("dd/MM/yyyy")</MudText>
                 </MudItem>
             </MudItem>
             <MudItem Class="d-flex justify-center gap-3">
@@ -26,16 +26,16 @@
                     <MudTextField @bind-Value="_searchAppointment" Placeholder="Search" Adornment="Adornment.Start" Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-3" MaxLength="40"></MudTextField>
                 </MudItem>
                 <MudItem Class="mt-3">
-                    <MudIconButton Color="Color.Tertiary" Size="Size.Small" Icon="@Icons.Material.Filled.Search" Variant="Variant.Filled" Style="height: 54px;" />
+                    <MudIconButton Color="Color.Tertiary" Size="Size.Small" Icon="@Icons.Material.Filled.Search" OnClick="SearchMyAppointment" Variant="Variant.Filled" Style="height: 54px;" />
                 </MudItem>
             </MudItem>
         </NotAuthorized>
     </AuthorizeView>
 </MudItem>
-<MudItem Class="d-flex justify-center mt-4 pa-4">
+<MudItem Class="d-flex flex-column mt-4 pa-4">
     <MudPaper Elevation="20" Class="pa-6">
         <MudText Typo="Typo.h4">Appointment</MudText>
-        <MudItem Class="pa-4 d-flex flex-column">
+        <MudItem Class="pa-4 d-flex flex-column gap-3">
             @foreach (var appointment in Appointments)
             {
                 <UserAppointmentCard Model="@appointment" />
@@ -44,17 +44,14 @@
     </MudPaper>
     <MudPaper Elevation="20" Class="mt-4 pa-6">
         <MudText Typo="Typo.h4">Booking</MudText>
-        <MudItem Class="pa-4">
+        <MudItem Class="pa-4  d-flex flex-column gap-3">
             @foreach (var book in Bookings)
             {
                 <UserAppointmentCard Model="@book" />
             }
         </MudItem>
     </MudPaper>
-
 </MudItem>
-
-
 
 @code {
     public List<AppointmentModel> Appointments { get; set; } = new();

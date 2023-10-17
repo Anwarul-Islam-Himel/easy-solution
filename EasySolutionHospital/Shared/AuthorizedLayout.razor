@@ -4,11 +4,13 @@
         <AuthorizeView Roles="@(UserRoleType.User.ToString())">
             <Authorized>
                 <AppBar />
+                <MudMainContent Class="main-content">
+                    @ChildContent
+                </MudMainContent>
             </Authorized>
             <NotAuthorized>
-                <MudAppBar Color="Color.Transparent" Class="d-flex mb-16" Elevation="1">
+                <MudAppBar Color="Color.Primary" Class="d-flex" Elevation="1">
                     <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
-                    <MudImage Style="width: 70px;" Src="Images/logo.png"></MudImage>
                     <MudSpacer />
                     <MudMenu AnchorOrigin="Origin.BottomRight" Dense="true">
                         <ActivatorContent>
@@ -26,16 +28,16 @@
                 <MudDrawer @bind-Open="@_drawerOpen">
                     <NavMenu />
                 </MudDrawer>
+                <MudMainContent Class="px-4 mt-4">
+                    @ChildContent
+                </MudMainContent>
             </NotAuthorized>
         </AuthorizeView>
-        <MudMainContent>
-            @ChildContent
-        </MudMainContent>
     </MudLayout>
 }
 
 <style>
-    .mud-main-content {
+    .main-content {
         padding-top: 0px !important;
     }
 </style>

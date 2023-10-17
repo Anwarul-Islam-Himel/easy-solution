@@ -1,6 +1,6 @@
 ﻿@using EasySolutionHospital.Components
 
-<MudCarousel Class="mud-width-full" Style="height:600px;" ShowArrows="false" ShowBullets="true" EnableSwipeGesture="true" AutoCycle="true" TData="object">
+<MudCarousel Class="mud-width-full" Style="height:600px;" ShowArrows="false" ShowBullets="true" EnableSwipeGesture="true" AutoCycle="false" TData="object">
     <MudCarouselItem Class="carousel-first-background" Transition="transition" Color="Color.Primary">
         <MudItem Class="transbox">
             <MudItem Class="carousel-header-text">
@@ -36,7 +36,19 @@
     </MudCarouselItem>
     <MudCarouselItem Transition="transition" Class="carousel-second-background" Color="Color.Primary">
         <MudItem Class="transbox">
-
+            <MudItem Class="carousel-header-text">
+                <MudText Style="font-weight: 600;" Typo="Typo.h3">Health for every one</MudText>
+            </MudItem>
+            <MudItem>
+                <MudText Style="margin-left: 160px; margin-top: 18px;">
+                    To render same level of service to the poor <br />
+                    that the rich will get in a good hospital.
+                </MudText>
+            </MudItem>
+            <MudItem Class="d-flex gap-4 justify-end" Style="padding-right: 15%; padding-top: 3%">
+                <MudButton Variant="Variant.Filled" Color="Color.Secondary">View Package</MudButton>
+                <MudButton Variant="Variant.Outlined" Color="Color.Secondary">Get Service</MudButton>
+            </MudItem>
         </MudItem>
     </MudCarouselItem>
     <MudCarouselItem Transition="transition" Class="carousel-third-background" Color="Color.Primary">

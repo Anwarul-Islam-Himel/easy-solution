@@ -1,0 +1,123 @@
+﻿@page "/patient"
+
+<MudTabs>
+    <MudTabPanel Text="Today">
+        <MudTable Items="TodayAppointments" Loading="isLoading" T="AppointmentModel" Dense="true">
+            <ToolBarContent>
+                <MudText Typo="Typo.h6">Appointment</MudText>
+            </ToolBarContent>
+            <ColGroup>
+                <col />
+                <col />
+                <col />
+                <col />
+                <col />
+                <col />
+                <col style="width:50px;" />
+            </ColGroup>
+            <HeaderContent>
+                <MudTd><MudTableSortLabel SortBy="new Func<AppointmentModel, object>(x => x.Name)">Patient Name</MudTableSortLabel></MudTd>
+                <MudTd><MudTableSortLabel SortBy="new Func<AppointmentModel, object>(x => x.Email)">Email</MudTableSortLabel></MudTd>
+                <MudTd><MudTableSortLabel SortBy="new Func<AppointmentModel, object>(x => x.Phone)">Phone Number</MudTableSortLabel></MudTd>
+                <MudTd><MudTableSortLabel SortBy="new Func<AppointmentModel, object>(x => x.Age)">Age</MudTableSortLabel></MudTd>
+                <MudTd><MudTableSortLabel SortBy="new Func<AppointmentModel, object>(x => x.AppointDate)">Appoint Date</MudTableSortLabel></MudTd>
+                <MudTd>Payment Status</MudTd>
+            </HeaderContent>
+            <NoRecordsContent>
+                <MudText Typo="Typo.h5" Class="mud-text-secondary mt-16 mb-16">No Patient</MudText>
+            </NoRecordsContent>
+            <RowTemplate>
+                <MudTd>@context.Name</MudTd>
+                <MudTd>@context.Email</MudTd>
+                <MudTd>@context.Phone</MudTd>
+                <MudTd>@context.Age</MudTd>
+                <MudTd>@context.AppointDate.ToString("dd/MM//yyyy")</MudTd>
+                @if (context.IsPay)
+                {
+                    <MudTd><MudText Color="Color.Tertiary">Paid</MudText></MudTd>
+                }
+                else
+                {
+                    <MudTd><MudText>Unpaid</MudText></MudTd>
+                }
+                <MudTd>
+                </MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager RowsPerPageString="Rows Per Page" />
+            </PagerContent>
+        </MudTable>
+    </MudTabPanel>
+    <MudTabPanel Text="All">
+        <MudTable Items="Appointments" Loading="isLoading" T="AppointmentModel" Dense="true">
+            <ToolBarContent>
+                <MudText Typo="Typo.h6">Appointment</MudText>
+            </ToolBarContent>
+            <ColGroup>
+                <col />
+                <col />
+                <col />
+                <col />
+                <col />
+                <col />
+                <col style="width:50px;" />
+            </ColGroup>
+            <HeaderContent>
+                <MudTd><MudTableSortLabel SortBy="new Func<AppointmentModel, object>(x => x.Name)">Patient Name</MudTableSortLabel></MudTd>
+                <MudTd><MudTableSortLabel SortBy="new Func<AppointmentModel, object>(x => x.Email)">Email</MudTableSortLabel></MudTd>
+                <MudTd><MudTableSortLabel SortBy="new Func<AppointmentModel, object>(x => x.Phone)">Phone Number</MudTableSortLabel></MudTd>
+                <MudTd><MudTableSortLabel SortBy="new Func<AppointmentModel, object>(x => x.Age)">Age</MudTableSortLabel></MudTd>
+                <MudTd><MudTableSortLabel SortBy="new Func<AppointmentModel, object>(x => x.Gender)">Gender</MudTableSortLabel></MudTd>
+                <MudTd>Payment Status</MudTd>
+            </HeaderContent>
+            <NoRecordsContent>
+                <MudText Typo="Typo.h5" Class="mud-text-secondary mt-16 mb-16">No Patient</MudText>
+            </NoRecordsContent>
+            <RowTemplate>
+                <MudTd>@context.Name</MudTd>
+                <MudTd>@context.Email</MudTd>
+                <MudTd>@context.Phone</MudTd>
+                <MudTd>@context.Age</MudTd>
+                <MudTd>@context.Gender.ToString()</MudTd>
+                @if (context.IsPay)
+                {
+                    <MudTd><MudText Color="Color.Tertiary">Paid</MudText></MudTd>
+                }
+                else
+                {
+                    <MudTd><MudText>Unpaid</MudText></MudTd>
+                }
+                <MudTd>
+                </MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager RowsPerPageString="Rows Per Page" />
+            </PagerContent>
+        </MudTable>
+    </MudTabPanel>
+</MudTabs>
+
+@code {
+    public List<AppointmentModel> Appointments { get; set; } = new();
+    public List<AppointmentModel> TodayAppointments { get; set; } = new();
+    public DoctorViewModel DoctorProfile { get; set; } = new();
+    private bool isLoading { get; set; } = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            Appointments = await _httpService.Get<List<AppointmentModel>>($"/api/Doctor/appointment/{_currentUser.UserId}");
+            DoctorProfile = await _httpService.Get<DoctorViewModel>($"/api/Doctor/{_currentUser.UserId}");
+            TodayAppointments = Appointments.Where(x => x.AppointDate == DateTime.Today).ToList();
+        }
+        catch
+        {
+            Appointments = new List<AppointmentModel>();
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+}

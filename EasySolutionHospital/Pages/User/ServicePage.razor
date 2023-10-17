@@ -1,0 +1,49 @@
+﻿@page "/service"
+
+<MudTabs>
+    <MudTabPanel Text="Super Speciality" Class="px-6 mt-4">
+        <MudPaper Outlined="true" Class="pa-6 d-flex flex-column">
+            <MudItem Class="d-flex justify-center mb-4">
+                <MudText Color="Color.Primary" Typo="Typo.h6">Super Speciality Services</MudText>
+            </MudItem>
+            <MudItem Class="d-flex justify-center">
+                <MudItem Class="d-flex flex-wrap gap-3 justify-center" Style="width: 80%;">
+                    @foreach (var service in SuperServices)
+                    {
+                        <MudItem Style="width:30%">
+                            <ServiceCard ServiceName="@service.Name" />
+                        </MudItem>
+                    }
+                </MudItem>
+            </MudItem>
+        </MudPaper>
+    </MudTabPanel>
+    <MudTabPanel Text="Broad Speciality" Class="px-6 mt-4">
+        <MudPaper Outlined="true" Class="pa-6 d-flex flex-column">
+            <MudItem Class="d-flex justify-center mb-4">
+                <MudText Color="Color.Primary" Typo="Typo.h6">Broad Speciality Services</MudText>
+            </MudItem>
+            <MudItem Class="d-flex justify-center">
+                <MudItem Class="d-flex flex-wrap gap-3 justify-center" Style="width: 80%;">
+                    @foreach (var service in BroadServices)
+                    {
+                        <MudItem Style="width:30%">
+                            <ServiceCard ServiceName="@service.Name" />
+                        </MudItem>
+                    }
+                </MudItem>
+            </MudItem>
+        </MudPaper>
+    </MudTabPanel>
+</MudTabs>
+
+@code {
+    public List<ServiceViewModel> SuperServices { get; set; } = new();
+    public List<ServiceViewModel> BroadServices { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        SuperServices = await _healthService.GetSuperSpecialityServices();
+        BroadServices = await _healthService.GetBroadSpecialityServices();
+    }
+}

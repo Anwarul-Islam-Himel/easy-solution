@@ -11,14 +11,15 @@
             }
             else
             {
-                <MudText Color="Color.Primary" Typo="Typo.body1">@Model.DoctorName</MudText>
+                <MudText Color="Color.Primary" Typo="Typo.body1">Dr. @Model.DoctorName</MudText>
             }
         </MudItem>
-        <MudItem xs="2">
+        <MudItem xs="2" Class="d-flex flex-column gap-2">
+            <MudText Typo="Typo.body1" Style="font-weight: 500;">Appoint Date</MudText>
             <MudText Typo="Typo.body2">@Model.AppointDate.ToString("dd/MM/yyyy")</MudText>
         </MudItem>
-        <MudItem xs="1">
-            @if (Model.IsPay)
+        <MudItem xs="1" Class="d-flex align-center">
+            @if (!Model.IsPay)
             {
                 <MudButton Variant="Variant.Outlined" Color="Color.Success" OnClick="Pay" Size="Size.Small"><MudText>Pay</MudText></MudButton>
             }
@@ -36,6 +37,35 @@
 
     private async Task Pay()
     {
-        
+        try
+        {
+            var dialogData = new DialogParameters
+                {
+                    ["ContentText"] = "Are you sure you want to pay!",
+                    ["SubmitButtonText"] = "Pay",
+                    ["ButtonColor"] = Color.Tertiary
+                };
+            var dialog = _dialogService.Show<ConfirmationDialog>("Delete", dialogData);
+            var result = await dialog.Result;
+            if (!result.Canceled)
+            {
+                var response = await _httpService.Get<Unit>($"/api/Hospital/pay-bill/{Model.Id}/{_currentUser.UserId}");
+                if (response.IsSuccess)
+                {
+                    _currentUser.Recharge(response.Amount);
+                    await ((AuthStateProvider)_authStateProvider).SetProfileAmountAync(response.Amount);
+                    Model.IsPay = true;
+                    _snakBar.Add(response.Message, Severity.Success);
+                }
+                else
+                {
+                    _snakBar.Add(response.Message, Severity.Error);
+                }
+            }
+        }
+        catch(Exception ex)
+        {
+            _snakBar.Add("Somthing wrong or Insufficient Balance", Severity.Error);
+        }
     }
 }

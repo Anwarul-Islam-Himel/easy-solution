@@ -23,6 +23,7 @@ namespace EasySolutionHospital.API.Services
         Task<DoctorViewModel> GetDoctorById(int id);
         Task<Unit> AddMoneyInProfile(Guid id, string userId);
         Task<Unit> TakeAppointmentAsync(AppointmentModel model);
+        Task<Unit> PayBillAsync(int bookinId, string userId);
     }
     public class HospitalService : IHospitalService
     {
@@ -188,7 +189,7 @@ namespace EasySolutionHospital.API.Services
                 var doctorId = new List<int>();
                 foreach (var appointment in appoints)
                 {
-                    if (appointment.DoctorId != 0)
+                    if (appointment.DoctorId != null)
                     {
                         doctorId.Add(appointment.DoctorId.Value);
                     }
@@ -214,8 +215,9 @@ namespace EasySolutionHospital.API.Services
                             Phone = appoint.Phone,
                             Gender = appoint.Gender,
                             DoctorId = doctorAppoint.Id,
-                            DoctorName = doctorAppoint.User.FirstName + doctorAppoint.User.LastName,
-                            DoctorSpecialization = doctorAppoint.Specialization
+                            DoctorName = doctorAppoint.User.FirstName + " " + doctorAppoint.User.LastName,
+                            DoctorSpecialization = doctorAppoint.Specialization,
+                            IsPay = appoint.IsPay != null ? appoint.IsPay.Value : false
                         };
                         returnBookings.Add(response);
                     }
@@ -351,6 +353,77 @@ namespace EasySolutionHospital.API.Services
                 {
                     IsSuccess = true,
                     Message = "Appointment taken successfully!"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new()
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
+            }
+        }
+
+        public async Task<Unit> PayBillAsync(int bookinId, string userId)
+        {
+            try
+            {
+                var book = await _context.Bookings.FindAsync(bookinId);
+                var user = await _userManager.FindByIdAsync(userId);
+                if(book != null && user != null)
+                {
+                    if(book.DoctorId != null)
+                    {
+                        var doctor = await _context.Doctors.FindAsync(book.DoctorId);
+                        if( doctor != null && doctor.FeeAmount <= user.TotalPurchase)
+                        {
+                            doctor.TotalReceive = doctor.TotalReceive != null ? doctor.TotalReceive + doctor.FeeAmount : doctor.FeeAmount;
+                            user.TotalPurchase = user.TotalPurchase - doctor.FeeAmount;
+                            _context.Doctors.Update(doctor);
+                            await _context.SaveChangesAsync();
+                        }
+                        else
+                        {
+                            return new()
+                            {
+                                IsSuccess = false,
+                                Message = "Insufficient Balance"
+                            };
+                        }
+                    }
+                    else
+                    {
+                        var package = await _context.Packages.FindAsync(book.PackageId);
+                        if(package != null && package.PriceForMale + package.PriceForFemale <= user.TotalPurchase)
+                        {
+                            package.AmountPay = package.PriceForMale + package.PriceForFemale;
+                            user.TotalPurchase = user.TotalPurchase - (package.PriceForMale + package.PriceForFemale);
+                            _context.Packages.Update(package);
+                            await _context.SaveChangesAsync();
+                        }
+                        else
+                        {
+                            return new()
+                            {
+                                IsSuccess = false,
+                                Message = "Insufficient Balance"
+                            };
+                        }
+                    }
+
+                    book.IsPay = true;
+                    await _userManager.UpdateAsync(user);
+                    await _context.SaveChangesAsync();
+
+                    _context.Bookings.Update(book);
+                    await _context.SaveChangesAsync();
+                }
+                return new()
+                {
+                    IsSuccess = true,
+                    Message = "Successfully pay bill !!",
+                    Amount = user.TotalPurchase
                 };
             }
             catch (Exception ex)

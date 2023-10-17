@@ -21,5 +21,6 @@ namespace EasySolutionHospital.Shared.ViewModels
         public int? RoomNumber { get; set; }
         public int? FeeAmount { get; set; }
         public string? ImagePath { get; set; }
+        public int? TotalEarnings { get; set; }
     }
 }
