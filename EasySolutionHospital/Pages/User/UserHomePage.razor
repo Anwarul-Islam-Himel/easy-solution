@@ -47,7 +47,7 @@
             </MudItem>
             <MudItem Class="d-flex gap-4 justify-end" Style="padding-right: 15%; padding-top: 3%">
                 <MudButton Variant="Variant.Filled" Color="Color.Secondary">View Package</MudButton>
-                <MudButton Variant="Variant.Outlined" Color="Color.Secondary">Get Service</MudButton>
+                <MudButton Variant="Variant.Outlined" Color="Color.Secondary" OnClick="Service">Get Service</MudButton>
             </MudItem>
         </MudItem>
     </MudCarouselItem>
@@ -162,5 +162,10 @@
     private void ViewDoctor()
     {
         _navigator.NavigateTo("view-doctor");
+    }
+
+    private void Service()
+    {
+        _navigator.NavigateTo("service");
     }
 }

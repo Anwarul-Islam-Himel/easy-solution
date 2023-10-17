@@ -1,13 +1,16 @@
 ﻿@page "/view-doctor"
 
-<MudItem Class="d-flex justify-center mt-5">
+<MudItem Class="d-flex justify-center gap-4 mt-5">
     <MudItem Style="width: 300px;">
-        <MudTextField @bind-Value="_searchAppointment" Placeholder="Search for doctors" Adornment="Adornment.Start" Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-3 mb-4" MaxLength="40" />
+        <MudTextField @bind-Value="_searchDoctor" T="string" Placeholder="Search for doctors" Adornment="Adornment.Start" Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-3 mb-4" MaxLength="40" />
+    </MudItem>
+    <MudItem Class="mt-3">
+        <MudIconButton Color="Color.Tertiary" Size="Size.Small" Icon="@Icons.Material.Filled.Search" OnClick="SearchDoctor" Variant="Variant.Filled" Style="height: 54px;" />
     </MudItem>
 </MudItem>
 <MudItem Class="d-flex justify-center mt-4 mb-5">
     <MudItem Class="d-flex flex-wrap gap-4 justify-center" Style="width: 90%;">
-        @foreach (var doctor in Doctors)
+        @foreach (var doctor in _listDoctors)
         {
             <MudItem Style="width:25%">
                 <DoctorCard Doctor="@doctor" />
@@ -17,17 +20,28 @@
 </MudItem>
 @code {
     public List<DoctorViewModel> Doctors { get; set; } = new();
-    public string _searchAppointment { get; set; } = string.Empty;
+    public List<DoctorViewModel> _listDoctors { get; set; } = new();
+    public string _searchDoctor { get; set; } = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
             Doctors = await _httpService.Get<List<DoctorViewModel>>("/api/Hospital/approved-doctor");
+            _listDoctors = Doctors;
         }
         catch
         {
             Doctors = new List<DoctorViewModel>();
         }
+    }
+
+    private void SearchDoctor()
+    {
+        _listDoctors = Doctors.Where(x =>
+               x.FirstName.Contains(_searchDoctor, StringComparison.OrdinalIgnoreCase)
+            || x.LastName.Contains(_searchDoctor, StringComparison.OrdinalIgnoreCase)
+            || x.Specialization.Contains(_searchDoctor, StringComparison.OrdinalIgnoreCase)
+            || x.Degree.Contains(_searchDoctor, StringComparison.OrdinalIgnoreCase)).ToList();
     }
 }

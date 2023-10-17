@@ -11,7 +11,7 @@
         <Authorized>
             <MudItem Class="d-flex flex-row gap-2 mr-8">
                 <MudButton Class="appber-button" OnClick="Home">Home</MudButton>
-                <MudButton Class="appber-button">Service</MudButton>
+                <MudButton Class="appber-button" OnClick="Service">Service</MudButton>
                 <MudButton Class="appber-button" OnClick="ViewDoctor">Appointment</MudButton>
                 <MudButton Class="appber-button" OnClick="Reacharge">Reacharge</MudButton>
             </MudItem>
@@ -36,7 +36,7 @@
         <NotAuthorized>
             <MudItem Class="d-flex flex-row gap-2 mr-8">
                 <MudButton Class="appber-button" OnClick="Home">Home</MudButton>
-                <MudButton Class="appber-button">Service</MudButton>
+                <MudButton Class="appber-button" OnClick="Service">Service</MudButton>
                 <MudButton Class="appber-button" OnClick="ViewDoctor">Appointment</MudButton>
             </MudItem>
             <MudMenu AnchorOrigin="Origin.BottomRight" Dense="true">
@@ -166,5 +166,10 @@
     private void ViewDoctor()
     {
         _navigator.NavigateTo("view-doctor");
+    }
+
+    private void Service()
+    {
+        _navigator.NavigateTo("service");
     }
 }
