@@ -15,7 +15,7 @@ namespace EasySolutionHospital.Models
         [Required]
         public string Phone { get; set; }
         [Required]
-        public DateTime AppointDate { get; set; } = DateTime.Now;
+        public DateTime? AppointDate { get; set; } = DateTime.Today;
         public string? Description { get; set; }
         public Gender Gender { get; set; }
         public string? DoctorName { get; set; }

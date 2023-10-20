@@ -50,7 +50,7 @@ namespace EasySolutionHospital.API.Services
                     Age = model.Age.Value,
                     Phone = model.Phone,
                     Gender = model.Gender,
-                    AppointTime = model.AppointDate,
+                    AppointTime = model.AppointDate.Value,
                     PackageId = model.HealthPackageId.Value
                 };
                 await _context.Bookings.AddAsync(newBooking);
@@ -344,7 +344,7 @@ namespace EasySolutionHospital.API.Services
                     Age = model.Age.Value,
                     Phone = model.Phone,
                     Gender = model.Gender,
-                    AppointTime = model.AppointDate,
+                    AppointTime = model.AppointDate.Value,
                     DoctorId = model.DoctorId
                 };
                 await _context.Bookings.AddAsync(newBooking);

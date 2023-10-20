@@ -48,7 +48,7 @@
         {
             Appointments = await _httpService.Get<List<AppointmentModel>>($"/api/Doctor/appointment/{_currentUser.UserId}");
             DoctorProfile = await _httpService.Get<DoctorViewModel>($"/api/Doctor/{_currentUser.UserId}");
-            number = Appointments.Where(x => x.AppointDate == DateTime.Today).Count();
+            number = Appointments.Where(x => x.AppointDate.Value.Date == DateTime.Today.Date).Count();
         }
         catch
         {

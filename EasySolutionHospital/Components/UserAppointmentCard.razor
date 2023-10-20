@@ -16,7 +16,7 @@
         </MudItem>
         <MudItem xs="2" Class="d-flex flex-column gap-2">
             <MudText Typo="Typo.body1" Style="font-weight: 500;">Appoint Date</MudText>
-            <MudText Typo="Typo.body2">@Model.AppointDate.ToString("dd/MM/yyyy")</MudText>
+            <MudText Typo="Typo.body2">@Model.AppointDate.Value.ToString("dd/MM/yyyy")</MudText>
         </MudItem>
         <MudItem xs="1" Class="d-flex align-center">
             @if (!Model.IsPay)

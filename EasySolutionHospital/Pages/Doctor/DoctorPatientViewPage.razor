@@ -31,7 +31,7 @@
                 <MudTd>@context.Email</MudTd>
                 <MudTd>@context.Phone</MudTd>
                 <MudTd>@context.Age</MudTd>
-                <MudTd>@context.AppointDate.ToString("dd/MM//yyyy")</MudTd>
+                <MudTd>@context.AppointDate.Value.ToString("dd/MM//yyyy")</MudTd>
                 @if (context.IsPay)
                 {
                     <MudTd><MudText Color="Color.Tertiary">Paid</MudText></MudTd>
@@ -109,7 +109,7 @@
         {
             Appointments = await _httpService.Get<List<AppointmentModel>>($"/api/Doctor/appointment/{_currentUser.UserId}");
             DoctorProfile = await _httpService.Get<DoctorViewModel>($"/api/Doctor/{_currentUser.UserId}");
-            TodayAppointments = Appointments.Where(x => x.AppointDate == DateTime.Today).ToList();
+            TodayAppointments = Appointments.Where(x => x.AppointDate.Value.Day == DateTime.Today.Day).ToList();
         }
         catch
         {

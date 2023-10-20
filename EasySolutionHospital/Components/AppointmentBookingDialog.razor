@@ -13,7 +13,7 @@
                     <MudNumericField @bind-Value="Model.Age" Label="Age" For="(() => Model.Age)" Variant="Variant.Outlined" Margin="Margin.Dense"></MudNumericField>
                 </MudItem>
                 <MudItem xs="6">
-                    <MudDatePicker Date="Model.AppointDate" Label="Appoint Date" Placeholder="Select Date" Variant="Variant.Outlined" Margin="Margin.Dense"></MudDatePicker>
+                    <MudDatePicker @bind-Date="Model.AppointDate" Label="Appoint Date" PickerVariant="PickerVariant.Dialog" Placeholder="Select Date" Variant="Variant.Outlined" Margin="Margin.Dense"></MudDatePicker>
                 </MudItem>
                 <MudItem xs="3">
                     <MudSelect T="Gender" @bind-Value="Model.Gender" Label="Gender" For="(() => Model.Gender)" Variant="Variant.Outlined" Margin="Margin.Dense">
