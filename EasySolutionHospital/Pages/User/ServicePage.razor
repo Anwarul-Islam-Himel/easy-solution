@@ -37,13 +37,28 @@
     </MudTabPanel>
 </MudTabs>
 
+<MudOverlay Visible="isLoading" DarkBackground="true">
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+</MudOverlay>
+
 @code {
     public List<ServiceViewModel> SuperServices { get; set; } = new();
     public List<ServiceViewModel> BroadServices { get; set; } = new();
 
+    private bool isLoading { get; set; } = true;
+
     protected override async Task OnInitializedAsync()
     {
-        SuperServices = await _healthService.GetSuperSpecialityServices();
-        BroadServices = await _healthService.GetBroadSpecialityServices();
+        try
+        {
+            SuperServices = await _healthService.GetSuperSpecialityServices();
+            BroadServices = await _healthService.GetBroadSpecialityServices();
+        }
+        catch
+        { }
+        finally
+        {
+            isLoading = false;
+        }
     }
 }

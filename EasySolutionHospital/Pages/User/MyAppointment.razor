@@ -21,58 +21,87 @@
                     <MudText>@currentDate.ToString("dd/MM/yyyy")</MudText>
                 </MudItem>
             </MudItem>
-            <MudItem Class="d-flex justify-center gap-3">
-                <MudItem Style="width: 400px;">
-                    <MudTextField @bind-Value="_searchAppointment" Placeholder="Search" Adornment="Adornment.Start" Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-3" MaxLength="40"></MudTextField>
-                </MudItem>
-                <MudItem Class="mt-3">
-                    <MudIconButton Color="Color.Tertiary" Size="Size.Small" Icon="@Icons.Material.Filled.Search" OnClick="SearchMyAppointment" Variant="Variant.Filled" Style="height: 54px;" />
-                </MudItem>
+            <MudItem >
+                <EditForm Model="SearchModel" Context="Search" OnValidSubmit="SearchMyAppointment">
+                  <DataAnnotationsValidator />
+                    <MudItem Class="d-flex justify-center gap-3">
+                        <MudItem Style="width: 400px;">
+                            <MudTextField @bind-Value="SearchModel.SearchKey" Placeholder="Search" Adornment="Adornment.Start" Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-3" MaxLength="40" For="() => SearchModel.SearchKey" Immediate="true" />
+                        </MudItem>
+                        <MudItem Class="mt-3">
+                            <MudIconButton Color="Color.Primary" Size="Size.Small" Icon="@Icons.Material.Filled.Search" ButtonType="ButtonType.Submit" Variant="Variant.Filled" Style="height: 54px;" />
+                        </MudItem>
+                    </MudItem>
+                </EditForm>
             </MudItem>
         </NotAuthorized>
     </AuthorizeView>
 </MudItem>
 <MudItem Class="d-flex flex-column mt-4 pa-4">
-    <MudPaper Elevation="20" Class="pa-6">
-        <MudText Typo="Typo.h4">Appointment</MudText>
-        <MudItem Class="pa-4 d-flex flex-column gap-3">
-            @foreach (var appointment in Appointments)
-            {
-                <UserAppointmentCard Model="@appointment" />
-            }
-        </MudItem>
-    </MudPaper>
-    <MudPaper Elevation="20" Class="mt-4 pa-6">
-        <MudText Typo="Typo.h4">Booking</MudText>
-        <MudItem Class="pa-4  d-flex flex-column gap-3">
-            @foreach (var book in Bookings)
-            {
-                <UserAppointmentCard Model="@book" />
-            }
-        </MudItem>
-    </MudPaper>
+    @if (Appointments.Any())
+    {
+        <MudPaper Elevation="0" Outlined="true" Class="pa-6">
+            <MudText Align="Align.Center" Typo="Typo.h4">Appointment</MudText>
+            <MudItem Class="pa-4 d-flex flex-column gap-3">
+                @foreach (var appointment in Appointments)
+                {
+                    <UserAppointmentCard Model="@appointment" />
+                }
+            </MudItem>
+        </MudPaper>
+    }
+    @if (Bookings.Any())
+    {
+        <MudPaper Elevation="0" Outlined="true" Class="mt-4 pa-6">
+            <MudText Align="Align.Center" Typo="Typo.h4">Health Check-Up</MudText>
+            <MudItem Class="pa-4  d-flex flex-column gap-3">
+                @foreach (var book in Bookings)
+                {
+                    <UserAppointmentCard Model="@book" />
+                }
+            </MudItem>
+        </MudPaper>
+    }
 </MudItem>
+
+<MudOverlay Visible="isLoading" DarkBackground="true">
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+</MudOverlay>
 
 @code {
     public List<AppointmentModel> Appointments { get; set; } = new();
     public List<AppointmentModel> Bookings { get; set; } = new();
     public DateTime currentDate { get; set; } = DateTime.Now;
-    public string _searchAppointment { get; set; } = string.Empty;
+    public SearchModel SearchModel { get; set; } = new();
+    private bool isLoading { get; set; } = true;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
             Appointments = await _httpService.Get<List<AppointmentModel>>($"/api/Hospital/my-appointment/{_currentUser.UserId}");
+            Bookings = await _httpService.Get<List<AppointmentModel>>($"/api/Hospital/my-bookings/{_currentUser.UserId}");
         }
         catch
         {
             Appointments = new List<AppointmentModel>();
         }
+        finally
+        {
+            isLoading = false;
+        }
     }
 
     private async Task SearchMyAppointment()
     {
-        
+        try
+        {
+            Appointments = await _httpService.Get<List<AppointmentModel>>($"/api/Hospital/search-appointment/{SearchModel.SearchKey}");
+            Bookings = await _httpService.Get<List<AppointmentModel>>($"/api/Hospital/search-bookings/{SearchModel.SearchKey}");
+        }
+        catch
+        {
+            
+        }
     }
 }

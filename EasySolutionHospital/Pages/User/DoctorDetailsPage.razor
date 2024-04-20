@@ -8,7 +8,7 @@
                     <MudImage Src="@Doctor.ImagePath" ObjectFit="ObjectFit.Fill" Style="width: 580px; height: 490px;" />
                 </MudItem>
                 <MudItem Class="d-flex justify-center mt-3">
-                    <MudText Color="Color.Primary" Typo="Typo.h6">Dr. @Doctor.FirstName @Doctor.LastName</MudText>
+                    <MudText Color="Color.Primary" Typo="Typo.h6">@Doctor.FirstName @Doctor.LastName</MudText>
                 </MudItem>
             </MudPaper>
         </MudItem>
@@ -46,6 +46,10 @@
     </MudGrid>
 </MudItem>
 
+<MudOverlay Visible="isLoading" DarkBackground="true">
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+</MudOverlay>
+
 <style>
      .header-text{
          font-size: 16px;
@@ -66,6 +70,7 @@
     public DoctorViewModel Doctor { get; set; } = new DoctorViewModel();
     private bool isAuthorized { get; set; } = false;
     private AppointmentModel CurrentUserInfo { get; set; } = new();
+    private bool isLoading { get; set; } = true;
 
     private DialogOptions _dialogOption = new DialogOptions() { MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true, CloseButton = false };
 
@@ -73,6 +78,7 @@
     {
         try
         {
+            isLoading = true;
             var user = (await AuthState).User;
             if (user != null && user.Identity != null && user.Identity.IsAuthenticated)
             {
@@ -84,6 +90,10 @@
         catch
         {
             Doctor = new();
+        }
+        finally
+        {
+            isLoading = false;
         }
     }
 

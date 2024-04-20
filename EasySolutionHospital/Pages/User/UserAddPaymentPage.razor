@@ -24,10 +24,15 @@
     </MudItem>
 </MudItem>
 
+<MudOverlay Visible="isLoading" DarkBackground="true">
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+</MudOverlay>
+
 @code {
     public List<PaymentCardViewModel> Payments { get; set; } = new();
     private Guid? paymentCardId { get; set; } = null;
     private bool NotValid { get; set; } = true;
+    private bool isLoading { get; set; } = true;
 
     protected override async Task OnInitializedAsync()
     {
@@ -40,6 +45,10 @@
         catch
         {
             Payments = new List<PaymentCardViewModel>();
+        }
+        finally
+        {
+            isLoading = false;
         }
     }
 

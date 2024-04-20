@@ -1,5 +1,4 @@
-﻿using EasySolutionHospital.API.Entities;
-using EasySolutionHospital.API.Entity;
+﻿using EasySolutionHospital.API.Entity;
 using EasySolutionHospital.API.Infrastructures;
 using EasySolutionHospital.Shared.Enum;
 using EasySolutionHospital.Shared.ResponseModel;
@@ -74,7 +73,6 @@ namespace EasySolutionHospital.API.Services
             try
             {
                 var doctors = await _context.Doctors
-                    .Where(x => x.Approved == false)
                     .Include(x => x.User)
                     .ToListAsync();
 
@@ -89,7 +87,13 @@ namespace EasySolutionHospital.API.Services
                     NDoctorId = x.NDoctorId,
                     Degree = x.Degree,
                     DateOfBirth = x.User.DateOfBirth,
-                    Address = x.User.Address
+                    Address = x.User.Address,
+                    Approved = x.Approved,
+                    FeeAmount = x.FeeAmount,
+                    ConsultingTime = x.ConsultingTime,
+                    RoomNumber = x.RoomNumber,
+                    ImagePath = x.ImagePath,
+
                 }).ToList();
             }
             catch (Exception ex)
@@ -112,18 +116,30 @@ namespace EasySolutionHospital.API.Services
                         Message = "Doctor not found!!"
                     };
                 }
+
                 doctor.ImagePath = model.ImagePath;
                 doctor.FeeAmount = model.FeeAmount;
                 doctor.RoomNumber = model.RoomNumber;
                 doctor.ConsultingTime = model.ConsultingTime;
-
                 _context.Doctors.Update(doctor);
+
+                var user = await _userManager.FindByIdAsync(doctor.UserId);
+                if(user != null)
+                {
+                    user.FirstName = model.FirstName;
+                    if (!string.IsNullOrEmpty(model.LastName))
+                    {
+                        user.LastName = model.LastName;
+                    }
+                    await _userManager.UpdateAsync(user);
+                }
+
                 await _context.SaveChangesAsync();
 
                 return new()
                 {
                     IsSuccess = true,
-                    Message = "Successfully edit doctor profile"
+                    Message = "Successfully update doctor profile"
                 };
             }
             catch(Exception ex)

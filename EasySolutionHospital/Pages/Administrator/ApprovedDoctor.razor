@@ -17,8 +17,8 @@
         <MudTd><MudTableSortLabel SortBy="new Func<DoctorViewModel, object>(x => x.PhonenNumber)">Phone Number</MudTableSortLabel></MudTd>
         <MudTd><MudTableSortLabel SortBy="new Func<DoctorViewModel, object>(x => x.Specialization)">Specialization</MudTableSortLabel></MudTd>
         <MudTd><MudTableSortLabel SortBy="new Func<DoctorViewModel, object>(x => x.NDoctorId)">Registration Number</MudTableSortLabel></MudTd>
-        <MudTd><MudTableSortLabel SortBy="new Func<DoctorViewModel, object>(x => x.DateOfBirth)">Date of birth</MudTableSortLabel></MudTd>
-        <MudTd>Action</MudTd>
+        <MudTh>Status</MudTh>
+        <MudTd Style="text-align: right;">Action</MudTd>
     </HeaderContent>
     <NoRecordsContent>
         <MudText Typo="Typo.h5" Class="mud-text-secondary mt-16 mb-16">No Doctors</MudText>
@@ -30,8 +30,17 @@
         <MudTd>@context.PhonenNumber</MudTd>
         <MudTd>@context.Specialization</MudTd>
         <MudTd>@context.NDoctorId</MudTd>
-        <MudTd>@context.DateOfBirth.Value.ToString("dd/MM/yyyy")</MudTd>
         <MudTd>
+            @if (context.Approved != null && context.Approved.Value)
+            {
+                <MudChip Variant="Variant.Outlined" Color="Color.Success">Approved</MudChip>
+            }
+            else
+            {
+                <MudChip Variant="Variant.Outlined" Color="Color.Error">Pending</MudChip>
+            }
+        </MudTd>
+        <MudTd Style="text-align: right;">
             <MudMenu Icon="@Icons.Material.Filled.MoreVert">
                 <MudMenuItem IconColor="Color.Tertiary" Icon="@Icons.Material.Filled.Approval" OnClick="() => Approved(context)">Approved</MudMenuItem>
                 <MudMenuItem IconColor="Color.Error" Icon="@Icons.Material.Filled.Cancel">Denied</MudMenuItem>
@@ -44,8 +53,12 @@
     </PagerContent>
 </MudTable>
 
+<MudOverlay Visible="isLoading" DarkBackground="true">
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+</MudOverlay>
+
 @code{
-    private List<DoctorViewModel> Doctors{ get; set; }
+    private List<DoctorViewModel> Doctors { get; set; } = new();
     private bool isLoading { get; set; } = true;
 
     protected override async Task OnInitializedAsync()
@@ -82,7 +95,6 @@
             if (response.IsSuccess)
             {
                 doctor.Approved = true;
-                Doctors.Remove(doctor);
                 _snakBar.Add("Successfully approved doctor!", Severity.Success);
             }
             else
@@ -94,16 +106,31 @@
 
     private async Task Edit(DoctorViewModel doctor)
     {
-        var dialog = _dialogService.Show<EditDoctorProfileDialog>("Edit Profile");
+        var model = new DoctorEditFormModel
+            {
+                FirstName = doctor.FirstName,
+                LastName = doctor.LastName,
+                ConsultingTime = doctor.ConsultingTime,
+                FeeAmount = doctor.FeeAmount,
+                ImagePath = doctor.ImagePath,
+                RoomNumber = doctor.RoomNumber
+            };
+
+        var dialogData = new DialogParameters
+            {
+                ["Model"] = model
+            };
+        var dialog = _dialogService.Show<EditDoctorProfileDialog>("Update Doctor's Profile", dialogData);
         var result = await dialog.Result;
 
         if (!result.Canceled)
         {
-            var model = result.Data as DoctorEditFormModel;
-            var response = await _httpService.Post<Unit>($"/api/Administrator/edit-doctor/{doctor.Id}", model);
+            var data = result.Data as DoctorEditFormModel;
+            var response = await _httpService.Post<Unit>($"/api/Administrator/edit-doctor/{doctor.Id}", data);
             if (response.IsSuccess)
             {
-                _snakBar.Add("Successfully approved doctor!", Severity.Success);
+                Doctors = await _httpService.Get<List<DoctorViewModel>>("/api/Administrator/doctors");
+                _snakBar.Add("Successfully update doctor profile", Severity.Success);
             }
             else
             {

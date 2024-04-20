@@ -85,6 +85,10 @@
 </MudItem>
 
 
+<MudOverlay Visible="isLoading" DarkBackground="true">
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+</MudOverlay>
+
 <style>
     .carousel-first-background {
         width: 100%;
@@ -146,16 +150,23 @@
     private List<HealthPackageVM> HealthPackages { get; set; } = new();
     private List<TestParameterVM> TestParameters { get; set; } = new();
 
+    private bool isLoading { get; set; } = true;
+
     protected override async Task OnInitializedAsync()
     {
         try
         {
+            isLoading = true;
             TestParameters = await _httpService.Get<List<TestParameterVM>>("/api/Hospital/test-parameters");
             HealthPackages = await _healthService.GetAllPackage();
         }
         catch
         {
             TestParameters = new List<TestParameterVM>();
+        }
+        finally
+        {
+            isLoading = false;
         }
     }
 

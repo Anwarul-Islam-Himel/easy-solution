@@ -65,6 +65,14 @@ namespace EasySolutionHospital.API.Controllers
             return Ok(ressponse);
         }
 
+        [HttpGet, Route("my-bookings/{userId}")]
+        public async Task<IActionResult> GetMyBookings(string userId) =>
+            Ok(await _hospitalService.GetMyBookingsById(userId));
+
+        [HttpGet, Route("search-bookings/{email}")]
+        public async Task<IActionResult> SearchBookings(string email) =>
+            Ok(await _hospitalService.GetMyBookingsByEmail(email));
+
         [HttpGet, Route("approved-doctor")]
         public async Task<IActionResult> GetApprovedDoctor()
         {

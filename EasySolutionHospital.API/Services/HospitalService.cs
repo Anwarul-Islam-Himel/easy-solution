@@ -24,6 +24,8 @@ namespace EasySolutionHospital.API.Services
         Task<Unit> AddMoneyInProfile(Guid id, string userId);
         Task<Unit> TakeAppointmentAsync(AppointmentModel model);
         Task<Unit> PayBillAsync(int bookinId, string userId);
+        Task<List<AppointmentModel>> GetMyBookingsById(string id);
+        Task<List<AppointmentModel>> GetMyBookingsByEmail(string email);
     }
     public class HospitalService : IHospitalService
     {
@@ -195,7 +197,7 @@ namespace EasySolutionHospital.API.Services
                     }
                 }
                 var doctors = await _context.Doctors.Where(x => doctorId.Contains(x.Id))
-                    .Include(x => x.User).ToArrayAsync();
+                    .Include(x => x.User).ToListAsync();
 
                 var returnBookings = new List<AppointmentModel>();
 
@@ -217,7 +219,72 @@ namespace EasySolutionHospital.API.Services
                             DoctorId = doctorAppoint.Id,
                             DoctorName = doctorAppoint.User.FirstName + " " + doctorAppoint.User.LastName,
                             DoctorSpecialization = doctorAppoint.Specialization,
-                            IsPay = appoint.IsPay != null ? appoint.IsPay.Value : false
+                            IsPay = appoint.IsPay != null ? appoint.IsPay.Value : false,
+                            TotalAmount = doctorAppoint.FeeAmount.Value,
+                        };
+                        returnBookings.Add(response);
+                    }
+                }
+                return returnBookings;
+            }
+            catch
+            {
+                return new List<AppointmentModel>();
+            }
+        }
+
+        public async Task<List<AppointmentModel>> GetMyBookingsById(string id)
+        {
+            try
+            {
+                var user = await _userManager.FindByIdAsync(id);
+                return await GetMyBookingsByEmail(user.Email);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public async Task<List<AppointmentModel>> GetMyBookingsByEmail(string email)
+        {
+            try
+            {
+                var appoints = await _context.Bookings
+                   .Where(x => x.Email == email)
+                   .ToListAsync();
+
+                var packageIds = new List<int>();
+                foreach (var appointment in appoints)
+                {
+                    if (appointment.PackageId != null)
+                    {
+                        packageIds.Add(appointment.PackageId.Value);
+                    }
+                }
+                var packages = await _context.Packages.Where(x => packageIds.Contains(x.Id))
+                    .ToListAsync();
+
+                var returnBookings = new List<AppointmentModel>();
+                foreach (var appoint in appoints)
+                {
+                    var package = packages.Where(x => x.Id == appoint.PackageId).FirstOrDefault();
+                    if (package != null)
+                    {
+                        var response = new AppointmentModel
+                        {
+                            Id = appoint.Id,
+                            Name = appoint.Name,
+                            Email = appoint.Email,
+                            Description = appoint.Description,
+                            Age = appoint.Age,
+                            AppointDate = appoint.AppointTime,
+                            Phone = appoint.Phone,
+                            Gender = appoint.Gender,
+                            HealthPackageId = package.Id,
+                            HealthPackageName = package.Name,
+                            IsPay = appoint.IsPay != null ? appoint.IsPay.Value : false,
+                            TotalAmount = package.PriceForFemale + package.PriceForMale,
                         };
                         returnBookings.Add(response);
                     }

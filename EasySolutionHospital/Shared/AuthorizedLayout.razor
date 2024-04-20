@@ -80,6 +80,7 @@
     private async Task Logout()
     {
         await ((AuthStateProvider)_authStateProvider).ClearStateAsync();
+        StateHasChanged();
         _navigator.NavigateTo("/");
     }
 

@@ -4,16 +4,22 @@
             <DataAnnotationsValidator />
             <MudGrid>
                 <MudItem xs="6">
-                    <MudTextField @bind-Value="Model.ConsultingTime" Label="Consulting Time" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                    <MudTextField @bind-Value="Model.FirstName" Label="First Name" Variant="Variant.Outlined" Margin="Margin.Dense" For="@(() => Model.FirstName)" />
                 </MudItem>
                 <MudItem xs="6">
-                    <MudTextField @bind-Value="Model.RoomNumber" Label="Room Number" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                    <MudTextField @bind-Value="Model.LastName" Label="Last Name" Variant="Variant.Outlined" Margin="Margin.Dense" For="@(() => Model.LastName)" />
                 </MudItem>
                 <MudItem xs="6">
-                    <MudNumericField @bind-Value="Model.FeeAmount" Label="Fees" Variant="Variant.Outlined" Margin="Margin.Dense"></MudNumericField>
+                    <MudTextField @bind-Value="Model.ConsultingTime" Label="Consulting Time" Variant="Variant.Outlined" Margin="Margin.Dense" For="@(() => Model.ConsultingTime)" />
                 </MudItem>
                 <MudItem xs="6">
-                    <MudTextField @bind-Value="Model.ImagePath" Label="Image" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                    <MudTextField @bind-Value="Model.RoomNumber" Label="Room Number" Variant="Variant.Outlined" Margin="Margin.Dense" For="@(() => Model.RoomNumber)" />
+                </MudItem>
+                <MudItem xs="6">
+                    <MudNumericField @bind-Value="Model.FeeAmount" Label="Fees" Variant="Variant.Outlined" Margin="Margin.Dense" For="@(() => Model.FeeAmount)" />
+                </MudItem>
+                <MudItem xs="6">
+                    <MudTextField @bind-Value="Model.ImagePath" Label="Image" Variant="Variant.Outlined" Margin="Margin.Dense" For="@(() => Model.ImagePath)" />
                 </MudItem>
             </MudGrid>
             <MudItem Class="mt-4 d-flex justify-end gap-2 mb-2">
@@ -27,8 +33,8 @@
 @code {
     [CascadingParameter]
     MudDialogInstance MudDialog { get; set; }
-
-    private DoctorEditFormModel Model { get; set; } = new();
+    [Parameter]
+    public DoctorEditFormModel Model { get; set; } = new();
 
     private void Cancel() => MudDialog.Cancel();
 

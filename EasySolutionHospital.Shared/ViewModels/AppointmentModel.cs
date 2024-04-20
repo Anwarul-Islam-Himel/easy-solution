@@ -24,6 +24,6 @@ namespace EasySolutionHospital.Models
         public int? PriceForMale { get; set; }
         public int? PriceForFemale { get; set; }
         public bool IsPay { get; set; } = false;
-
+        public int TotalAmount { get; set; }
     }
 }

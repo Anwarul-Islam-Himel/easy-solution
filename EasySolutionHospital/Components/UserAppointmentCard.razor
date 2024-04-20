@@ -4,29 +4,26 @@
             <MudText Typo="Typo.body2">@Model.Name</MudText>
             <MudText Typo="Typo.body2">@Model.Email</MudText>
         </MudItem>
-        <MudItem xs="6">
+        <MudItem xs="4">
             @if (string.IsNullOrEmpty(Model.DoctorName))
             {
-                <MudText Color="Color.Primary" Typo="Typo.body1">@Model.HealthPackageName</MudText>
+                <MudLink Color="Color.Primary" Typo="Typo.body1" Style="font-size: 21px;" Href="@("/")">@Model.HealthPackageName</MudLink>
             }
             else
             {
-                <MudText Color="Color.Primary" Typo="Typo.body1">Dr. @Model.DoctorName</MudText>
+                <MudLink Color="Color.Primary" Typo="Typo.body1" Style="font-size: 21px;" Href="@($"/doctor-details/{Model.DoctorId}")">@Model.DoctorName</MudLink>
             }
+        </MudItem>
+        <MudItem xs="2" Class="d-flex flex-column gap-2">
+            <MudText Typo="Typo.body1" Style="font-weight: 500;">Total Amount</MudText>
+            <MudText>@Model.TotalAmount /-</MudText>
         </MudItem>
         <MudItem xs="2" Class="d-flex flex-column gap-2">
             <MudText Typo="Typo.body1" Style="font-weight: 500;">Appoint Date</MudText>
             <MudText Typo="Typo.body2">@Model.AppointDate.Value.ToString("dd/MM/yyyy")</MudText>
         </MudItem>
         <MudItem xs="1" Class="d-flex align-center">
-            @if (!Model.IsPay)
-            {
-                <MudButton Variant="Variant.Outlined" Color="Color.Success" OnClick="Pay" Size="Size.Small"><MudText>Pay</MudText></MudButton>
-            }
-            else
-            {
-                <MudButton Variant="Variant.Outlined" Color="Color.Success" Disabled Size="Size.Small"><MudText>Paid</MudText></MudButton>
-            }
+            <MudChip Variant="Variant.Outlined" Color="@(Model.IsPay ? Color.Success : Color.Warning)">@(Model.IsPay ? "Paid" : "Not Paid")</MudChip>
         </MudItem>
     </MudGrid>
 </MudPaper>
